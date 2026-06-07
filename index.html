@@ -422,6 +422,28 @@
 
   .link-del:hover { background: var(--red); color: white; }
 
+  /* ── 充值流水 ── */
+  .topup-row {
+    display: grid;
+    grid-template-columns: 1.2fr 1fr 1fr auto;
+    gap: 8px;
+    margin-bottom: 8px;
+    align-items: center;
+  }
+  .topup-row .form-input { margin: 0; }
+  .topup-list-item {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 8px 10px;
+    border: 1px solid var(--rule);
+    margin-bottom: 6px;
+    background: var(--card-bg);
+    font-family: var(--f-mono);
+    font-size: 12px;
+  }
+  .topup-list-item .tli-actions { display: flex; gap: 6px; }
+
   .site-card-body {
     padding: 16px 18px;
     display: grid;
@@ -521,6 +543,39 @@
     color: var(--muted);
     margin-top: 3px;
   }
+
+  /* ── 单站每日用量折叠 ── */
+  .usage-toggle {
+    padding: 10px 18px;
+    border-top: 1.5px dashed var(--rule);
+    background: var(--paper);
+    cursor: pointer;
+    font-family: var(--f-mono);
+    font-size: 11px;
+    letter-spacing: 0.08em;
+    color: var(--muted);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+  .usage-toggle:hover { color: var(--ink); background: var(--paper-dark); }
+  .usage-panel {
+    padding: 4px 18px 14px;
+    background: var(--paper);
+    display: none;
+  }
+  .usage-panel.open { display: block; }
+  .usage-line {
+    display: flex;
+    justify-content: space-between;
+    font-family: var(--f-mono);
+    font-size: 12px;
+    padding: 6px 0;
+    border-bottom: 1px dotted var(--rule);
+  }
+  .usage-line:last-child { border-bottom: none; }
+  .usage-line .ul-date { color: var(--muted); }
+  .usage-line .ul-amt { font-weight: 600; }
 
   /* ── CHARACTER CARDS ── */
   .char-grid {
@@ -828,6 +883,28 @@
     outline: none;
   }
 
+  /* ── 分组标题 ── */
+  .group-header {
+    font-family: var(--f-display);
+    font-size: 14px;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    color: var(--ink);
+    margin: 22px 0 10px;
+    padding-bottom: 6px;
+    border-bottom: 1.5px dashed var(--rule-strong);
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+  .group-header:first-child { margin-top: 0; }
+  .group-count {
+    font-family: var(--f-mono);
+    font-size: 10px;
+    color: var(--muted);
+    font-weight: 400;
+  }
+
   /* ── EMPTY ── */
   .empty-state {
     text-align: center;
@@ -899,6 +976,93 @@
     transform: translateX(-50%) translateY(0);
   }
 
+  /* ── 结算面板 ── */
+  .settle-row {
+    display: grid;
+    grid-template-columns: 1.3fr 1fr 1fr;
+    gap: 10px;
+    align-items: center;
+    padding: 10px 0;
+    border-bottom: 1px dotted var(--rule);
+  }
+  .settle-row .sr-name { font-weight: 600; font-size: 13px; }
+  .settle-row .sr-last { font-family: var(--f-mono); font-size: 11px; color: var(--muted); }
+  .settle-head {
+    display: grid;
+    grid-template-columns: 1.3fr 1fr 1fr;
+    gap: 10px;
+    font-size: 9px;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--muted);
+    padding-bottom: 6px;
+    border-bottom: 1.5px solid var(--ink);
+  }
+
+  /* ── 小票 ── */
+  .receipt {
+    background: #fdfcf9;
+    border: 1px solid var(--rule);
+    box-shadow: 0 2px 10px rgba(0,0,0,0.12);
+    padding: 22px 20px 28px;
+    font-family: 'IBM Plex Mono','Courier Prime',monospace;
+    color: #2a2a2a;
+    max-width: 360px;
+    margin: 0 auto;
+    position: relative;
+  }
+  .receipt::after {
+    content: '';
+    position: absolute;
+    left: 0; right: 0; bottom: -8px;
+    height: 8px;
+    background: repeating-linear-gradient(135deg, #fdfcf9 0 8px, transparent 8px 16px);
+  }
+  .rcpt-title {
+    font-family: var(--f-display);
+    font-size: 22px;
+    font-weight: 900;
+    text-align: center;
+    letter-spacing: 0.06em;
+  }
+  .rcpt-sub { text-align: center; font-size: 12px; letter-spacing: 0.3em; margin-top: 2px; }
+  .rcpt-date { text-align: center; font-size: 11px; color: #777; margin-top: 6px; }
+  .rcpt-span { text-align: center; font-size: 10px; color: #b06a2c; margin-top: 3px; letter-spacing:0.05em;}
+  .rcpt-divider { border: none; border-top: 1px dashed #999; margin: 12px 0; }
+  .rcpt-line { display: flex; justify-content: space-between; font-size: 12px; padding: 3px 0; gap: 8px; }
+  .rcpt-line .rl-name { flex: 1; word-break: break-all; }
+  .rcpt-line .rl-amt { width: 64px; text-align: right; color: var(--red); }
+  .rcpt-line .rl-rmb { width: 64px; text-align: right; }
+  .rcpt-total { display: flex; justify-content: space-between; font-size: 13px; font-weight: 700; padding: 3px 0; }
+  .rcpt-foot { text-align: center; font-size: 10px; color: #888; margin-top: 14px; font-style: italic; line-height: 1.6; }
+  .rcpt-barcode {
+    margin-top: 12px;
+    height: 34px;
+    background: repeating-linear-gradient(90deg, #2a2a2a 0 2px, transparent 2px 4px, #2a2a2a 4px 5px, transparent 5px 9px);
+  }
+
+  .timeline { position: relative; padding-left: 24px; margin-top: 8px; }
+  .timeline::before {
+    content: '';
+    position: absolute;
+    left: 6px; top: 4px; bottom: 4px;
+    width: 2px;
+    background: var(--rule-strong);
+  }
+  .tl-node { position: relative; margin-bottom: 18px; cursor: pointer; }
+  .tl-node::before {
+    content: '';
+    position: absolute;
+    left: -22px; top: 3px;
+    width: 11px; height: 11px;
+    border-radius: 50%;
+    background: var(--paper);
+    border: 2.5px solid var(--ink);
+  }
+  .tl-node:hover::before { background: var(--ink); }
+  .tl-date { font-family: var(--f-mono); font-size: 12px; font-weight: 600; }
+  .tl-info { font-family: var(--f-mono); font-size: 11px; color: var(--muted); margin-top: 2px; }
+
   /* mobile tweak */
   @media (max-width: 600px) {
     .site-card-body { grid-template-columns: 1fr; }
@@ -909,6 +1073,9 @@
     main { padding: 20px 12px; }
     .link-edit-row { grid-template-columns: 44px 1fr auto; }
     .link-edit-row .link-url { grid-column: 1 / -1; }
+    .topup-row { grid-template-columns: 1fr 1fr auto; }
+    .header-right { gap: 6px; padding-left: 8px; }
+    .calc-btn { width: 34px; height: 34px; font-size: 16px; }
   }
 </style>
 </head>
@@ -925,6 +1092,8 @@
     <button class="nav-tab" onclick="switchTab('char')">◇ 角色纪念日</button>
   </nav>
   <div class="header-right">
+    <button class="calc-btn" onclick="openSettle()" title="今日结算">🧾</button>
+    <button class="calc-btn" onclick="toggleTimeline()" title="结算时间线">📊</button>
     <button class="calc-btn" onclick="toggleFontPicker()" title="字体主题" id="fontBtn">Aa</button>
     <button class="calc-btn" onclick="toggleCalc()" title="额度换算器">🧮</button>
   </div>
@@ -1018,6 +1187,10 @@
         <option value="balance">余额（高→低）</option>
         <option value="spent">花费（高→低）</option>
       </select>
+      <label class="form-label" style="margin:0 0 0 8px">分组：</label>
+      <select class="sort-select" onchange="renderSites()" id="groupFilter">
+        <option value="__all">全部</option>
+      </select>
     </div>
 
     <div id="siteList"></div>
@@ -1069,9 +1242,16 @@
           <input class="form-input" id="f_endpoint" placeholder="https://api.xxx.com/v1">
         </div>
       </div>
-      <div class="form-group">
-        <label class="form-label">密钥</label>
-        <input class="form-input" id="f_key" placeholder="sk-...">
+      <div class="form-row">
+        <div class="form-group">
+          <label class="form-label">密钥</label>
+          <input class="form-input" id="f_key" placeholder="sk-...">
+        </div>
+        <div class="form-group">
+          <label class="form-label">分组</label>
+          <input class="form-input" id="f_group" placeholder="如：常用 / 仅记账" list="groupOptions">
+          <datalist id="groupOptions"></datalist>
+        </div>
       </div>
 
       <hr class="divider">
@@ -1081,22 +1261,30 @@
       <div class="form-hint" style="margin-top:8px">例如：模型监控、空回退款。Emoji 可留空，默认 🔗</div>
 
       <hr class="divider">
-      <div class="divider-label">💰 消费记录</div>
+      <div class="divider-label">💰 充值流水（自动汇总充值/额度）</div>
+      <div id="topupList"></div>
+      <div class="topup-row">
+        <input class="form-input" type="number" id="tu_rmb" placeholder="充值金额(元)">
+        <input class="form-input" type="number" id="tu_credits" placeholder="到账额度">
+        <input class="form-input" type="date" id="tu_date">
+        <button type="button" class="btn-secondary" onclick="addTopup()">＋记账</button>
+      </div>
+      <div class="form-hint" style="margin-top:6px">每充一次填一笔。赠送/签到额度不要记这里，填到下面"其他额度"。</div>
 
-      <div class="form-row">
+      <div class="form-row" style="margin-top:14px">
         <div class="form-group">
-          <label class="form-label">累计充值金额（元）</label>
-          <input class="form-input" type="number" id="f_spent" placeholder="0" oninput="recalcRate()">
+          <label class="form-label">累计充值（元 · 自动）</label>
+          <input class="form-input" type="number" id="f_spent" placeholder="0" readonly style="background:var(--paper-dark);cursor:not-allowed">
         </div>
         <div class="form-group">
-          <label class="form-label">当前余额（额度）</label>
-          <input class="form-input" type="number" id="f_balance" placeholder="0">
+          <label class="form-label">充值额度（自动）</label>
+          <input class="form-input" type="number" id="f_credit_top" placeholder="0" readonly style="background:var(--paper-dark);cursor:not-allowed">
         </div>
       </div>
       <div class="form-row">
         <div class="form-group">
-          <label class="form-label">充值额度</label>
-          <input class="form-input" type="number" id="f_credit_top" placeholder="0" oninput="recalcRate()">
+          <label class="form-label">当前余额（额度）</label>
+          <input class="form-input" type="number" id="f_balance" placeholder="0">
         </div>
         <div class="form-group">
           <label class="form-label">其他额度（奖励/签到等）</label>
@@ -1121,13 +1309,63 @@
       </div>
       <div class="form-group">
         <label class="form-label">VIP 折扣（%）</label>
-        <input class="form-input" type="number" id="f_vip" placeholder="如：80（即八折）" min="1" max="100">
-        <div class="form-hint">留空则按原价计算</div>
+        <input class="form-input" type="number" id="f_vip" placeholder="如：95（即95折）" min="1" max="100">
+        <div class="form-hint">仅在「消耗折算」时生效，不影响余额估值</div>
       </div>
     </div>
     <div class="modal-footer">
       <button class="btn-secondary" onclick="closeSiteModal()">取消</button>
       <button class="btn-primary" onclick="saveSite()">保存</button>
+    </div>
+  </div>
+</div>
+
+<!-- 结算 MODAL -->
+<div class="modal-overlay" id="settleModal">
+  <div class="modal">
+    <div class="modal-header">
+      <span class="modal-title">🧾 结算</span>
+      <button class="modal-close" onclick="closeSettle()">×</button>
+    </div>
+    <div class="modal-body">
+      <div class="form-hint" style="margin-bottom:14px">填入各站点「现在的余额」，没用过的站留空即可跳过。系统会算出这一期的消耗并出小票。</div>
+      <div class="settle-head">
+        <span>站点</span><span>上次余额</span><span>现在余额</span>
+      </div>
+      <div id="settleRows"></div>
+    </div>
+    <div class="modal-footer">
+      <button class="btn-secondary" onclick="closeSettle()">取消</button>
+      <button class="btn-primary" onclick="doSettle()">结算并出票</button>
+    </div>
+  </div>
+</div>
+
+<!-- 小票 MODAL -->
+<div class="modal-overlay" id="receiptModal">
+  <div class="modal" style="max-width:420px;background:var(--paper-dark)">
+    <div class="modal-header">
+      <span class="modal-title">结算小票</span>
+      <button class="modal-close" onclick="closeReceipt()">×</button>
+    </div>
+    <div class="modal-body">
+      <div id="receiptArea"></div>
+    </div>
+    <div class="modal-footer">
+      <button class="btn-secondary" onclick="closeReceipt()">关闭</button>
+    </div>
+  </div>
+</div>
+
+<!-- 时间线 MODAL -->
+<div class="modal-overlay" id="timelineModal">
+  <div class="modal">
+    <div class="modal-header">
+      <span class="modal-title">📊 结算时间线</span>
+      <button class="modal-close" onclick="toggleTimeline()">×</button>
+    </div>
+    <div class="modal-body">
+      <div id="timelineArea"></div>
     </div>
   </div>
 </div>
@@ -1182,9 +1420,14 @@
 
 <script>
 // ── FONT SWITCHER ──
-function toggleFontPicker() {
-  document.getElementById('fontPopup').classList.toggle('open');
+function closeAllPopups() {
+  document.getElementById('fontPopup').classList.remove('open');
   document.getElementById('calcPopup').classList.remove('open');
+}
+function toggleFontPicker() {
+  const open = document.getElementById('fontPopup').classList.contains('open');
+  closeAllPopups();
+  if (!open) document.getElementById('fontPopup').classList.add('open');
 }
 
 function setFont(key) {
@@ -1201,6 +1444,23 @@ let chars = JSON.parse(localStorage.getItem('airp_chars') || '[]');
 let editingSiteId = null;
 let editingCharId = null;
 let avatarData = null;
+let editingTopups = [];   // 当前编辑站点的充值流水临时副本
+
+// 数据迁移：补齐新字段，保证旧数据兼容
+sites.forEach(s => {
+  if (!Array.isArray(s.links)) s.links = [];
+  if (!Array.isArray(s.topups)) s.topups = [];
+  if (!Array.isArray(s.history)) s.history = [];
+  if (s.group === undefined) s.group = '';
+  // 旧数据若有手填的 spent/credit_top，转成一笔初始流水，避免归零
+  if (s.topups.length === 0) {
+    const oldRmb = parseFloat(s.spent) || 0;
+    const oldCredit = parseFloat(s.credit_top) || 0;
+    if (oldRmb > 0 || oldCredit > 0) {
+      s.topups.push({ id: uid(), date: todayISO(), rmb: oldRmb, credits: oldCredit, note:'迁移' });
+    }
+  }
+});
 
 function save() {
   localStorage.setItem('airp_sites', JSON.stringify(sites));
@@ -1229,12 +1489,40 @@ function switchTab(tab) {
 function todayStr() {
   return new Date().toLocaleDateString('zh-CN', { year:'numeric', month:'long', day:'numeric', weekday:'long' });
 }
+function todayISO() {
+  const d = new Date();
+  return `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`;
+}
+function fmtDateShort(iso) {
+  if (!iso) return '—';
+  const p = iso.split('-');
+  return p.length === 3 ? `${parseInt(p[1])}月${parseInt(p[2])}日` : iso;
+}
+function daysBetweenISO(a, b) {
+  const d1 = new Date(a), d2 = new Date(b);
+  d1.setHours(0,0,0,0); d2.setHours(0,0,0,0);
+  return Math.round((d2 - d1) / 86400000);
+}
 
 function daysBetween(dateStr) {
   const d = new Date(dateStr);
   const now = new Date();
   d.setHours(0,0,0,0); now.setHours(0,0,0,0);
   return Math.floor((now - d) / 86400000);
+}
+
+// ── 充值流水汇总 ──
+function sumTopups(topups) {
+  let rmb = 0, credits = 0;
+  (topups || []).forEach(t => { rmb += parseFloat(t.rmb)||0; credits += parseFloat(t.credits)||0; });
+  return { rmb, credits };
+}
+// 平均单价：累计充值 ÷ 总额度（总额度 = 充值额度 + 其他额度）
+function avgPrice(s) {
+  const { rmb } = sumTopups(s.topups);
+  const totalCredit = (parseFloat(s.credit_top)||0) + (parseFloat(s.credit_other)||0);
+  if (rmb > 0 && totalCredit > 0) return rmb / totalCredit;
+  return 0;
 }
 
 // ── COPY ──
@@ -1250,10 +1538,12 @@ async function copyText(text, btnEl) {
 
 // ── CALCULATOR ──
 function toggleCalc() {
-  const p = document.getElementById('calcPopup');
-  p.classList.toggle('open');
-  document.getElementById('fontPopup').classList.remove('open');
-  if (p.classList.contains('open')) populateCalcSites();
+  const open = document.getElementById('calcPopup').classList.contains('open');
+  closeAllPopups();
+  if (!open) {
+    document.getElementById('calcPopup').classList.add('open');
+    populateCalcSites();
+  }
 }
 
 function populateCalcSites() {
@@ -1272,8 +1562,9 @@ function calcUpdate() {
   const res = document.getElementById('calcResult');
   if (!sid || isNaN(amt) || amt <= 0) { res.style.display='none'; return; }
   const site = sites.find(s => s.id === sid);
-  if (!site || !site.rate_credit) { res.style.display='none'; return; }
-  let pricePerCredit = parseFloat(site.rate_credit);
+  if (!site) { res.style.display='none'; return; }
+  let pricePerCredit = avgPrice(site);
+  if (!pricePerCredit) { res.style.display='none'; return; }
   if (site.vip && parseFloat(site.vip) > 0) pricePerCredit *= parseFloat(site.vip) / 100;
   const rmb = (amt * pricePerCredit).toFixed(4);
   document.getElementById('calcResultVal').textContent = '¥ ' + rmb;
@@ -1283,8 +1574,7 @@ function calcUpdate() {
   res.style.display = 'block';
 }
 
-// ── EXTENSION LINKS (拓展网站) ──
-// 在编辑弹窗里添加一行链接输入（emoji + 名称 + 链接）
+// ── EXTENSION LINKS ──
 function addLinkRow(name='', url='', emoji='') {
   const editor = document.getElementById('linksEditor');
   const row = document.createElement('div');
@@ -1297,7 +1587,6 @@ function addLinkRow(name='', url='', emoji='') {
   editor.appendChild(row);
 }
 
-// 从编辑弹窗收集所有有效链接（名称和链接都填了才算）
 function collectLinks() {
   const links = [];
   document.querySelectorAll('#linksEditor .link-edit-row').forEach(row => {
@@ -1309,45 +1598,111 @@ function collectLinks() {
   return links;
 }
 
-// 卡片上点击「拓展 ▾」展开/收起链接条
 function toggleLinks(id) {
   const el = document.getElementById('links-' + id);
   if (el) el.style.display = (el.style.display === 'none' || !el.style.display) ? 'flex' : 'none';
 }
 
+// ── 单站每日用量折叠 ──
+function toggleUsage(id) {
+  const el = document.getElementById('usage-' + id);
+  if (el) el.classList.toggle('open');
+}
+function toggleUsageAll(id, btn) {
+  const s = sites.find(x => x.id === id);
+  if (!s) return;
+  const full = btn.dataset.full === '1';
+  btn.dataset.full = full ? '0' : '1';
+  renderUsageLines(id, !full);
+  btn.textContent = full ? '查看全部 ▾' : '仅近30天 ▴';
+}
+function renderUsageLines(id, full) {
+  const s = sites.find(x => x.id === id);
+  const box = document.getElementById('usage-lines-' + id);
+  if (!s || !box) return;
+  let hist = [...(s.history || [])].filter(h => h.consumed !== undefined).reverse();
+  if (!full) hist = hist.slice(0, 30);
+  if (!hist.length) { box.innerHTML = `<div class="form-hint">暂无结算记录</div>`; return; }
+  const price = avgPrice(s);
+  box.innerHTML = hist.map(h => {
+    const rmb = price ? '¥' + (h.consumed * price).toFixed(2) : '—';
+    const span = h.spanDays > 1 ? ` <span style="color:var(--muted)">(${h.spanDays}天)</span>` : '';
+    return `<div class="usage-line"><span class="ul-date">${fmtDateShort(h.date)}${span}</span><span class="ul-amt">-${fmtNum(h.consumed)} 额度 · ${rmb}</span></div>`;
+  }).join('');
+}
+
 // ── SITE MODAL ──
 function openSiteModal(id=null) {
   editingSiteId = id;
+  closeAllPopups();
   const modal = document.getElementById('siteModal');
   document.getElementById('siteModalTitle').textContent = id ? '编辑站点' : '新增站点';
-  const fields = ['name','website','endpoint','key','spent','balance','credit_top','credit_other','rate_cny','rate_credit','vip'];
+  const fields = ['name','website','endpoint','key','group','spent','balance','credit_top','credit_other','rate_cny','rate_credit','vip'];
   fields.forEach(f => document.getElementById('f_' + f).value = '');
   document.getElementById('linksEditor').innerHTML = '';
+  document.getElementById('tu_date').value = todayISO();
+  editingTopups = [];
+  refreshGroupDatalist();
   if (id) {
     const s = sites.find(x => x.id === id);
     if (s) {
-      fields.forEach(f => { if (s[f] !== undefined) document.getElementById('f_' + f).value = s[f]; });
+      ['name','website','endpoint','key','group','balance','credit_other','vip'].forEach(f => {
+        if (s[f] !== undefined) document.getElementById('f_' + f).value = s[f];
+      });
       if (Array.isArray(s.links)) s.links.forEach(l => addLinkRow(l.name, l.url, l.emoji));
+      editingTopups = JSON.parse(JSON.stringify(s.topups || []));
     }
   }
+  renderTopupList();
   recalcRate();
   modal.classList.add('open');
 }
 
 function closeSiteModal() { document.getElementById('siteModal').classList.remove('open'); }
 
+// 充值流水：添加/删除/渲染
+function addTopup() {
+  const rmb = parseFloat(document.getElementById('tu_rmb').value) || 0;
+  const credits = parseFloat(document.getElementById('tu_credits').value) || 0;
+  const date = document.getElementById('tu_date').value || todayISO();
+  if (rmb <= 0 && credits <= 0) { toast('请填写充值金额或额度'); return; }
+  editingTopups.push({ id: uid(), date, rmb, credits });
+  document.getElementById('tu_rmb').value = '';
+  document.getElementById('tu_credits').value = '';
+  renderTopupList();
+  recalcRate();
+}
+function delTopup(tid) {
+  editingTopups = editingTopups.filter(t => t.id !== tid);
+  renderTopupList();
+  recalcRate();
+}
+function renderTopupList() {
+  const box = document.getElementById('topupList');
+  if (!editingTopups.length) { box.innerHTML = `<div class="form-hint" style="margin-bottom:8px">还没有充值记录</div>`; }
+  else {
+    box.innerHTML = editingTopups.map(t =>
+      `<div class="topup-list-item">
+        <span>${fmtDateShort(t.date)} · ¥${fmtNum(t.rmb)} → ${fmtNum(t.credits)} 额度</span>
+        <span class="tli-actions">
+          <button type="button" class="icon-btn" onclick="delTopup('${t.id}')" title="删除">✕</button>
+        </span>
+      </div>`).join('');
+  }
+}
+
 // ── 汇率自动计算（平均单价）──
-// 1元=多少额度 = 总额度 ÷ 累计充值；1额度=多少元 = 累计充值 ÷ 总额度
 function recalcRate() {
-  const spent = parseFloat(document.getElementById('f_spent').value) || 0;
-  const top   = parseFloat(document.getElementById('f_credit_top').value) || 0;
+  const { rmb, credits } = sumTopups(editingTopups);
   const other = parseFloat(document.getElementById('f_credit_other').value) || 0;
-  const totalCredit = top + other;
+  document.getElementById('f_spent').value = rmb ? rmb : '';
+  document.getElementById('f_credit_top').value = credits ? credits : '';
+  const totalCredit = credits + other;
   const elCny    = document.getElementById('f_rate_cny');
   const elCredit = document.getElementById('f_rate_credit');
-  if (spent > 0 && totalCredit > 0) {
-    elCny.value    = (totalCredit / spent).toFixed(2);
-    elCredit.value = (spent / totalCredit).toFixed(6);
+  if (rmb > 0 && totalCredit > 0) {
+    elCny.value    = (totalCredit / rmb).toFixed(2);
+    elCredit.value = (rmb / totalCredit).toFixed(6);
   } else {
     elCny.value = '';
     elCredit.value = '';
@@ -1357,20 +1712,28 @@ function recalcRate() {
 function saveSite() {
   const name = document.getElementById('f_name').value.trim();
   if (!name) { toast('请填写站点名称'); return; }
+  const { rmb, credits } = sumTopups(editingTopups);
+  const other = parseFloat(document.getElementById('f_credit_other').value) || 0;
+  const totalCredit = credits + other;
+  let existing = editingSiteId ? sites.find(s => s.id === editingSiteId) : null;
   const data = {
     id: editingSiteId || uid(),
     name,
     website: document.getElementById('f_website').value.trim(),
     endpoint: document.getElementById('f_endpoint').value.trim(),
     key: document.getElementById('f_key').value.trim(),
+    group: document.getElementById('f_group').value.trim(),
     links: collectLinks(),
-    spent: document.getElementById('f_spent').value,
+    topups: editingTopups,
+    spent: rmb,
     balance: document.getElementById('f_balance').value,
-    credit_top: document.getElementById('f_credit_top').value,
-    credit_other: document.getElementById('f_credit_other').value,
-    rate_cny: document.getElementById('f_rate_cny').value,
-    rate_credit: document.getElementById('f_rate_credit').value,
+    credit_top: credits,
+    credit_other: other,
+    rate_cny: (rmb>0 && totalCredit>0) ? (totalCredit/rmb).toFixed(2) : '',
+    rate_credit: (rmb>0 && totalCredit>0) ? (rmb/totalCredit).toFixed(6) : '',
     vip: document.getElementById('f_vip').value,
+    history: existing ? (existing.history || []) : [],
+    checkinUrl: existing ? (existing.checkinUrl || '') : '',
   };
   if (editingSiteId) {
     const i = sites.findIndex(s => s.id === editingSiteId);
@@ -1389,6 +1752,25 @@ function deleteSite(id) {
   toast('已删除');
 }
 
+// 分组下拉/datalist
+function allGroups() {
+  const set = new Set();
+  sites.forEach(s => { if (s.group && s.group.trim()) set.add(s.group.trim()); });
+  return [...set];
+}
+function refreshGroupDatalist() {
+  const dl = document.getElementById('groupOptions');
+  dl.innerHTML = allGroups().map(g => `<option value="${escHtml(g)}">`).join('');
+}
+function refreshGroupFilter() {
+  const sel = document.getElementById('groupFilter');
+  const cur = sel.value;
+  sel.innerHTML = `<option value="__all">全部</option>` +
+    allGroups().map(g => `<option value="${escHtml(g)}">${escHtml(g)}</option>`).join('') +
+    `<option value="__none">未分组</option>`;
+  sel.value = cur || '__all';
+}
+
 // ── KEY VISIBILITY ──
 const keyVis = {};
 function toggleKey(id) {
@@ -1398,8 +1780,13 @@ function toggleKey(id) {
 
 // ── RENDER SITES ──
 function renderSites() {
+  refreshGroupFilter();
   const sort = document.getElementById('siteSort').value;
+  const gf = document.getElementById('groupFilter').value;
   let list = [...sites];
+  if (gf === '__none') list = list.filter(s => !s.group || !s.group.trim());
+  else if (gf !== '__all') list = list.filter(s => (s.group||'').trim() === gf);
+
   if (sort === 'name') list.sort((a,b) => a.name.localeCompare(b.name));
   else if (sort === 'balance') list.sort((a,b) => (parseFloat(b.balance)||0) - (parseFloat(a.balance)||0));
   else if (sort === 'spent') list.sort((a,b) => (parseFloat(b.spent)||0) - (parseFloat(a.spent)||0));
@@ -1410,105 +1797,289 @@ function renderSites() {
     return;
   }
 
-  el.innerHTML = list.map(s => {
-    const totalCredit = (parseFloat(s.credit_top)||0) + (parseFloat(s.credit_other)||0);
-    const bal = parseFloat(s.balance) || 0;
-    let balRmb = '—';
-    if (s.rate_credit && bal > 0) {
-      let p = parseFloat(s.rate_credit);
-      if (s.vip && parseFloat(s.vip) > 0) p *= parseFloat(s.vip)/100;
-      balRmb = '¥' + (bal * p).toFixed(2);
-    }
-    const keyShown = keyVis[s.id];
-    const keyDisplay = s.key ? (keyShown ? s.key : s.key.slice(0,6) + '••••••••' + s.key.slice(-4)) : '—';
-    const hasLinks = Array.isArray(s.links) && s.links.length > 0;
+  // 按分组归类显示
+  let html = '';
+  if (gf === '__all') {
+    const groups = {};
+    list.forEach(s => { const g = (s.group||'').trim() || '未分组'; (groups[g] = groups[g]||[]).push(s); });
+    const groupNames = Object.keys(groups).sort((a,b) => a==='未分组'?1:b==='未分组'?-1:a.localeCompare(b));
+    groupNames.forEach(g => {
+      html += `<div class="group-header">${escHtml(g)} <span class="group-count">${groups[g].length} 个</span></div>`;
+      html += groups[g].map(renderSiteCard).join('');
+    });
+  } else {
+    html = list.map(renderSiteCard).join('');
+  }
+  el.innerHTML = html;
 
-    return `
-    <div class="site-card">
-      <div class="site-card-header">
-        <div class="site-name-row">
-          <span class="site-name">${escHtml(s.name)}</span>
-          ${s.website ? `<a class="site-link" href="${escHtml(s.website)}" target="mnemosyne_ext" rel="noopener" title="打开官网">🔗</a>` : ''}
+  // 渲染各站用量明细
+  list.forEach(s => renderUsageLines(s.id, false));
+}
+
+function renderSiteCard(s) {
+  const totalCredit = (parseFloat(s.credit_top)||0) + (parseFloat(s.credit_other)||0);
+  const bal = parseFloat(s.balance) || 0;
+  const price = avgPrice(s);
+  let balRmb = '—';
+  if (price && bal > 0) balRmb = '¥' + (bal * price).toFixed(2);
+  const keyShown = keyVis[s.id];
+  const keyDisplay = s.key ? (keyShown ? s.key : s.key.slice(0,6) + '••••••••' + s.key.slice(-4)) : '—';
+  const hasLinks = Array.isArray(s.links) && s.links.length > 0;
+  const hasHist = Array.isArray(s.history) && s.history.some(h => h.consumed !== undefined);
+
+  return `
+  <div class="site-card">
+    <div class="site-card-header">
+      <div class="site-name-row">
+        <span class="site-name">${escHtml(s.name)}</span>
+        ${s.website ? `<a class="site-link" href="${escHtml(s.website)}" target="mnemosyne_ext" title="打开官网">🔗</a>` : ''}
+      </div>
+      <div class="site-card-actions">
+        ${hasLinks ? `<button class="btn-secondary" onclick="toggleLinks('${s.id}')">🧩 拓展 ▾</button>` : ''}
+        <button class="btn-secondary" onclick="openSiteModal('${s.id}')">编辑</button>
+        <button class="btn-danger" onclick="deleteSite('${s.id}')">删除</button>
+      </div>
+    </div>
+    ${hasLinks ? `
+    <div class="links-panel" id="links-${s.id}" style="display:none">
+      ${s.links.map(l => `<a class="link-chip" href="${escHtml(l.url)}" target="mnemosyne_ext">${escHtml(l.emoji || '🔗')} ${escHtml(l.name)}</a>`).join('')}
+    </div>` : ''}
+    <div class="site-card-body">
+      <div class="field-group">
+        <div class="field-row">
+          <span class="field-label">端点</span>
+          <span class="field-value" style="font-size:11px;flex:1;word-break:break-all">${escHtml(s.endpoint || '—')}</span>
+          ${s.endpoint ? `<button class="icon-btn" onclick="copyText('${escHtml(s.endpoint)}', this)" title="复制">⎘</button>` : ''}
         </div>
-        <div class="site-card-actions">
-          ${hasLinks ? `<button class="btn-secondary" onclick="toggleLinks('${s.id}')">🧩 拓展 ▾</button>` : ''}
-          <button class="btn-secondary" onclick="openSiteModal('${s.id}')">编辑</button>
-          <button class="btn-danger" onclick="deleteSite('${s.id}')">删除</button>
+        <div class="field-row">
+          <span class="field-label">密钥</span>
+          <span class="field-value mono-secret" style="flex:1">${escHtml(keyDisplay)}</span>
+          ${s.key ? `<button class="icon-btn" onclick="toggleKey('${s.id}')" title="${keyShown?'隐藏':'显示'}">${keyShown?'🙈':'👁'}</button>` : ''}
+          ${s.key ? `<button class="icon-btn" onclick="copyText('${escHtml(s.key)}', this)" title="复制">⎘</button>` : ''}
+        </div>
+        <div class="field-row">
+          <span class="field-label">VIP折扣</span>
+          <span class="field-value">${s.vip ? s.vip + '折' : '无'}</span>
         </div>
       </div>
-      ${hasLinks ? `
-      <div class="links-panel" id="links-${s.id}" style="display:none">
-        ${s.links.map(l => `<a class="link-chip" href="${escHtml(l.url)}" target="mnemosyne_ext" rel="noopener">${escHtml(l.emoji || '🔗')} ${escHtml(l.name)}</a>`).join('')}
-      </div>` : ''}
-      <div class="site-card-body">
-        <div class="field-group">
-          <div class="field-row">
-            <span class="field-label">端点</span>
-            <span class="field-value" style="font-size:11px;flex:1;word-break:break-all">${escHtml(s.endpoint || '—')}</span>
-            ${s.endpoint ? `<button class="icon-btn" onclick="copyText('${escHtml(s.endpoint)}', this)" title="复制">⎘</button>` : ''}
-          </div>
-          <div class="field-row">
-            <span class="field-label">密钥</span>
-            <span class="field-value mono-secret" style="flex:1">${escHtml(keyDisplay)}</span>
-            ${s.key ? `<button class="icon-btn" onclick="toggleKey('${s.id}')" title="${keyShown?'隐藏':'显示'}">${keyShown?'🙈':'👁'}</button>` : ''}
-            ${s.key ? `<button class="icon-btn" onclick="copyText('${escHtml(s.key)}', this)" title="复制">⎘</button>` : ''}
-          </div>
-          <div class="field-row">
-            <span class="field-label">VIP折扣</span>
-            <span class="field-value">${s.vip ? s.vip + '折' : '无'}</span>
-          </div>
+      <div class="field-group">
+        <div class="field-row">
+          <span class="field-label">1元=</span>
+          <span class="field-value">${s.rate_cny || '—'} 额度</span>
         </div>
-        <div class="field-group">
-          <div class="field-row">
-            <span class="field-label">1元=</span>
-            <span class="field-value">${s.rate_cny || '—'} 额度</span>
-          </div>
-          <div class="field-row">
-            <span class="field-label">1额度=</span>
-            <span class="field-value">${s.rate_credit || '—'} 元</span>
-          </div>
-          <div class="field-row">
-            <span class="field-label">充值额度</span>
-            <span class="field-value">${fmtNum(s.credit_top)}</span>
-          </div>
-          <div class="field-row">
-            <span class="field-label">其他额度</span>
-            <span class="field-value">${fmtNum(s.credit_other)}</span>
-          </div>
+        <div class="field-row">
+          <span class="field-label">1额度=</span>
+          <span class="field-value">${s.rate_credit || '—'} 元</span>
+        </div>
+        <div class="field-row">
+          <span class="field-label">充值额度</span>
+          <span class="field-value">${fmtNum(s.credit_top)}</span>
+        </div>
+        <div class="field-row">
+          <span class="field-label">其他额度</span>
+          <span class="field-value">${fmtNum(s.credit_other)}</span>
         </div>
       </div>
-      <div class="site-card-stats">
-        <div class="stat-block">
-          <div class="stat-val negative">¥${fmtNum(s.spent)}</div>
-          <div class="stat-label">累计充值</div>
-        </div>
-        <div class="stat-block">
-          <div class="stat-val">${fmtNum(totalCredit)}</div>
-          <div class="stat-label">总额度</div>
-        </div>
-        <div class="stat-block">
-          <div class="stat-val positive">${fmtNum(s.balance)}</div>
-          <div class="stat-label">当前余额</div>
-        </div>
-        <div class="stat-block">
-          <div class="stat-val positive">${balRmb}</div>
-          <div class="stat-label">余额折RMB</div>
-        </div>
+    </div>
+    <div class="site-card-stats">
+      <div class="stat-block">
+        <div class="stat-val negative">¥${fmtNum(s.spent)}</div>
+        <div class="stat-label">累计充值</div>
       </div>
-    </div>`;
+      <div class="stat-block">
+        <div class="stat-val">${fmtNum(totalCredit)}</div>
+        <div class="stat-label">总额度</div>
+      </div>
+      <div class="stat-block">
+        <div class="stat-val positive">${fmtNum(s.balance)}</div>
+        <div class="stat-label">当前余额</div>
+      </div>
+      <div class="stat-block">
+        <div class="stat-val positive">${balRmb}</div>
+        <div class="stat-label">余额折RMB</div>
+      </div>
+    </div>
+    <div class="usage-toggle" onclick="toggleUsage('${s.id}')">
+      <span>📈 每日用量 ${hasHist ? '' : '（暂无）'}</span>
+      <span>▾</span>
+    </div>
+    <div class="usage-panel" id="usage-${s.id}">
+      <div style="display:flex;justify-content:flex-end;margin:6px 0">
+        <button class="btn-secondary" data-full="0" onclick="toggleUsageAll('${s.id}', this)">查看全部 ▾</button>
+      </div>
+      <div id="usage-lines-${s.id}"></div>
+    </div>
+  </div>`;
+}
+
+// ── 结算 ──
+function openSettle() {
+  closeAllPopups();
+  const box = document.getElementById('settleRows');
+  if (!sites.length) { box.innerHTML = `<div class="form-hint">还没有站点</div>`; }
+  else {
+    box.innerHTML = sites.map(s => {
+      const last = lastBalance(s);
+      return `
+      <div class="settle-row">
+        <span class="sr-name">${escHtml(s.name)}</span>
+        <span class="sr-last">${last === null ? '—' : fmtNum(last)}</span>
+        <input class="form-input settle-input" data-id="${s.id}" type="number" placeholder="留空跳过" style="margin:0">
+      </div>`;
+    }).join('');
+  }
+  document.getElementById('settleModal').classList.add('open');
+}
+function closeSettle() { document.getElementById('settleModal').classList.remove('open'); }
+
+// 上次结算/迁移得到的余额基准：优先历史最后一笔，其次当前 balance
+function lastBalance(s) {
+  if (Array.isArray(s.history) && s.history.length) {
+    return parseFloat(s.history[s.history.length-1].balance);
+  }
+  if (s.balance !== '' && s.balance !== undefined && s.balance !== null) return parseFloat(s.balance)||0;
+  return null;
+}
+function lastSettleDate(s) {
+  if (Array.isArray(s.history) && s.history.length) return s.history[s.history.length-1].date;
+  return null;
+}
+// 某日期之后的充值额度总和（用于消耗公式里加回充值）
+function topupCreditsAfter(s, sinceDateExclusive) {
+  if (!sinceDateExclusive) return 0;
+  let sum = 0;
+  (s.topups||[]).forEach(t => { if (t.date > sinceDateExclusive) sum += parseFloat(t.credits)||0; });
+  return sum;
+}
+
+function doSettle() {
+  const today = todayISO();
+  const inputs = document.querySelectorAll('.settle-input');
+  const items = [];
+  let totalConsumed = 0, totalRmb = 0;
+  inputs.forEach(inp => {
+    const val = inp.value.trim();
+    if (val === '') return;
+    const newBal = parseFloat(val);
+    if (isNaN(newBal)) return;
+    const s = sites.find(x => x.id === inp.dataset.id);
+    if (!s) return;
+    const prevBal = lastBalance(s);
+    const prevDate = lastSettleDate(s);
+    const added = topupCreditsAfter(s, prevDate);
+    let consumed = 0;
+    if (prevBal !== null) consumed = prevBal + added - newBal;
+    if (consumed < 0) consumed = 0; // 充值后余额上升等情况，钳到0
+    const spanDays = prevDate ? Math.max(1, daysBetweenISO(prevDate, today)) : 1;
+
+    // 更新余额，记历史
+    s.balance = newBal;
+    s.history.push({ date: today, balance: newBal, consumed, spanDays });
+
+    let price = avgPrice(s);
+    if (s.vip && parseFloat(s.vip) > 0) price *= parseFloat(s.vip)/100;
+    const rmb = price ? consumed * price : 0;
+    totalConsumed += consumed; totalRmb += rmb;
+    items.push({ name: s.name, consumed, rmb, spanDays, prevDate });
+  });
+
+  if (!items.length) { toast('没有填写任何余额'); return; }
+  save();
+  renderSites();
+  closeSettle();
+  showReceipt(items, totalConsumed, totalRmb, today);
+}
+
+const RCPT_QUOTES = [
+  'Memory is the treasury and guardian of all things.',
+  'Mnemosyne, mother of the Muses.',
+  'What we remember, we become.',
+  'Time is counted in what we spend.',
+];
+
+function showReceipt(items, totalConsumed, totalRmb, today) {
+  // 计算整票覆盖区间：取所有项里最早的 prevDate
+  let earliest = null, maxSpan = 1;
+  items.forEach(it => {
+    if (it.prevDate && (!earliest || it.prevDate < earliest)) earliest = it.prevDate;
+    if (it.spanDays > maxSpan) maxSpan = it.spanDays;
+  });
+  let spanLabel = '';
+  if (earliest && maxSpan > 1) spanLabel = `本期 ${fmtDateShort(earliest)} — ${fmtDateShort(today)} · 共 ${maxSpan} 天`;
+  else if (!earliest) spanLabel = '首次结算';
+
+  const quote = RCPT_QUOTES[Math.floor(Math.random()*RCPT_QUOTES.length)];
+  const lines = items.map(it => {
+    const span = it.spanDays > 1 ? ` <span style="color:#b06a2c">(${it.spanDays}d)</span>` : '';
+    return `<div class="rcpt-line"><span class="rl-name">${escHtml(it.name)}${span}</span><span class="rl-amt">-${fmtNum(it.consumed)}</span><span class="rl-rmb">¥${it.rmb.toFixed(2)}</span></div>`;
   }).join('');
+
+  document.getElementById('receiptArea').innerHTML = `
+    <div class="receipt">
+      <div class="rcpt-title">Mnemosyne</div>
+      <div class="rcpt-sub">日结小票</div>
+      <div class="rcpt-date">${today}</div>
+      ${spanLabel ? `<div class="rcpt-span">${spanLabel}</div>` : ''}
+      <hr class="rcpt-divider">
+      <div class="rcpt-line" style="color:var(--muted);font-size:10px"><span class="rl-name">站点</span><span class="rl-amt">消耗</span><span class="rl-rmb">折RMB</span></div>
+      ${lines}
+      <hr class="rcpt-divider">
+      <div class="rcpt-total"><span>合计消耗</span><span>${fmtNum(totalConsumed)} 额度</span></div>
+      <div class="rcpt-total"><span>合计金额</span><span>¥${totalRmb.toFixed(2)}</span></div>
+      <div class="rcpt-barcode"></div>
+      <div class="rcpt-foot">"${quote}"</div>
+    </div>`;
+  document.getElementById('receiptModal').classList.add('open');
+}
+function closeReceipt() { document.getElementById('receiptModal').classList.remove('open'); }
+
+// ── 时间线 ──
+function toggleTimeline() {
+  const m = document.getElementById('timelineModal');
+  const open = m.classList.contains('open');
+  if (open) { m.classList.remove('open'); return; }
+  closeAllPopups();
+  // 汇总所有站点的结算日期
+  const byDate = {};
+  sites.forEach(s => {
+    (s.history||[]).forEach(h => {
+      if (h.consumed === undefined) return;
+      if (!byDate[h.date]) byDate[h.date] = { consumed:0, rmb:0, span:1 };
+      let price = avgPrice(s);
+      if (s.vip && parseFloat(s.vip)>0) price *= parseFloat(s.vip)/100;
+      byDate[h.date].consumed += h.consumed;
+      byDate[h.date].rmb += price ? h.consumed*price : 0;
+      byDate[h.date].span = Math.max(byDate[h.date].span, h.spanDays||1);
+    });
+  });
+  const dates = Object.keys(byDate).sort().reverse();
+  const area = document.getElementById('timelineArea');
+  if (!dates.length) { area.innerHTML = `<div class="empty-state"><div class="empty-icon">📊</div><div class="empty-text">还没有结算记录 · 点 🧾 结算一次</div></div>`; }
+  else {
+    area.innerHTML = `<div class="timeline">` + dates.map(d => {
+      const x = byDate[d];
+      const spanTxt = x.span > 1 ? ` · 跨${x.span}天` : '';
+      return `<div class="tl-node">
+        <div class="tl-date">${d}${spanTxt}</div>
+        <div class="tl-info">消耗 ${fmtNum(x.consumed)} 额度 · 合 ¥${x.rmb.toFixed(2)}</div>
+      </div>`;
+    }).join('') + `</div>`;
+  }
+  m.classList.add('open');
 }
 
 // ── CHAR MODAL ──
 function openCharModal(id=null) {
   editingCharId = id;
   avatarData = null;
+  closeAllPopups();
   document.getElementById('charModalTitle').textContent = id ? '编辑角色' : '新增角色';
   document.getElementById('f_charname').value = '';
   document.getElementById('f_since').value = '';
   document.getElementById('f_charnote').value = '';
   document.getElementById('f_emoji').value = '';
   document.getElementById('avatarEmoji').textContent = '🎭';
+  document.getElementById('avatarEmoji').style.display = 'flex';
   document.getElementById('avatarImg').style.display = 'none';
   document.getElementById('avatarImg').src = '';
   if (id) {
@@ -1620,7 +2191,7 @@ function renderChars() {
 
 // ── UTILS ──
 function escHtml(str) {
-  if (!str) return '';
+  if (str === null || str === undefined) return '';
   return String(str).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;').replace(/'/g,'&#39;');
 }
 
@@ -1637,6 +2208,7 @@ document.querySelectorAll('.font-option').forEach(el => {
   el.classList.toggle('active', el.dataset.font === savedFont);
 });
 document.getElementById('todayDate').textContent = todayStr();
+save(); // 持久化迁移结果
 renderSites();
 renderChars();
 
