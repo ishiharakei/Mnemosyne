@@ -1,0 +1,1513 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>AIRP LEDGER</title>
+<!-- 默认：Playfair + IBM Plex Mono -->
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700;900&family=IBM+Plex+Mono:wght@400;500;600&family=Noto+Serif+SC:wght@400;600;700&display=swap" rel="stylesheet">
+<!-- 霞鹜文楷（清秀宋体系） -->
+<link href="https://cdn.jsdelivr.net/npm/lxgw-wenkai-webfont@1.7.0/style.css" rel="stylesheet">
+<!-- 像素风：Zpix -->
+<link href="https://cdn.jsdelivr.net/npm/zpix@3.1.1/dist/zpix.css" rel="stylesheet">
+<!-- 打字机：Special Elite -->
+<link href="https://fonts.googleapis.com/css2?family=Special+Elite&family=Courier+Prime:wght@400;700&display=swap" rel="stylesheet">
+<!-- 汇文明朝体 -->
+<link href="https://cdn.jsdelivr.net/npm/cn-fontsource-hui-wen-ming-chao-ti-regular/font.css" rel="stylesheet">
+<style>
+  :root {
+    --ink: #1a1a1a;
+    --paper: #f5f3ee;
+    --paper-dark: #ede9e0;
+    --rule: #c8c2b4;
+    --rule-strong: #8a8070;
+    --accent: #1a1a1a;
+    --accent-light: #e8e4dc;
+    --red: #c0392b;
+    --green: #27ae60;
+    --muted: #7a7060;
+    --card-bg: #faf8f4;
+  }
+
+  /* ── FONT THEMES ── */
+  body[data-font="default"] {
+    --f-display: 'Playfair Display', serif;
+    --f-body: 'IBM Plex Mono', monospace;
+    --f-mono: 'IBM Plex Mono', monospace;
+    --f-note: 'Noto Serif SC', serif;
+  }
+  body[data-font="mingchao"] {
+    --f-display: 'HuiWenMingChaoTi', 'Playfair Display', serif;
+    --f-body: 'HuiWenMingChaoTi', serif;
+    --f-mono: 'IBM Plex Mono', monospace;
+    --f-note: 'HuiWenMingChaoTi', serif;
+  }
+  body[data-font="wenkai"] {
+    --f-display: 'LXGW WenKai', serif;
+    --f-body: 'LXGW WenKai', serif;
+    --f-mono: 'IBM Plex Mono', monospace;
+    --f-note: 'LXGW WenKai', serif;
+  }
+  body[data-font="pixel"] {
+    --f-display: 'Zpix', monospace;
+    --f-body: 'Zpix', monospace;
+    --f-mono: 'Zpix', monospace;
+    --f-note: 'Zpix', monospace;
+  }
+  body[data-font="typewriter"] {
+    --f-display: 'Special Elite', 'Courier Prime', serif;
+    --f-body: 'Courier Prime', monospace;
+    --f-mono: 'Courier Prime', monospace;
+    --f-note: 'Courier Prime', serif;
+  }
+
+  /* Font picker popup */
+  .font-popup {
+    position: fixed;
+    top: 72px;
+    right: 72px;
+    width: 220px;
+    background: var(--paper);
+    border: 2.5px solid var(--ink);
+    z-index: 150;
+    display: none;
+    box-shadow: 6px 6px 0 var(--ink);
+  }
+  .font-popup.open { display: block; }
+  .font-popup-header {
+    padding: 10px 14px;
+    border-bottom: 2px solid var(--ink);
+    background: var(--paper-dark);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+  .font-popup-title {
+    font-size: 13px;
+    font-weight: 700;
+    letter-spacing: 0.05em;
+  }
+  .font-option {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 11px 14px;
+    cursor: pointer;
+    border-bottom: 1px solid var(--rule);
+    transition: background 0.1s;
+    border-left: 3px solid transparent;
+  }
+  .font-option:last-child { border-bottom: none; }
+  .font-option:hover { background: var(--paper-dark); }
+  .font-option.active {
+    border-left-color: var(--ink);
+    background: var(--accent-light);
+  }
+  .font-option-preview {
+    font-size: 17px;
+    line-height: 1;
+    flex-shrink: 0;
+    width: 28px;
+    text-align: center;
+  }
+  .font-option-name {
+    font-size: 12px;
+    font-weight: 600;
+    color: var(--ink);
+  }
+  .font-option-sub {
+    font-size: 9px;
+    color: var(--muted);
+    letter-spacing: 0.08em;
+    margin-top: 2px;
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    background: var(--paper);
+    color: var(--ink);
+    font-family: var(--f-body);
+    min-height: 100vh;
+    background-image:
+      repeating-linear-gradient(
+        0deg,
+        transparent,
+        transparent 27px,
+        rgba(0,0,0,0.04) 27px,
+        rgba(0,0,0,0.04) 28px
+      );
+  }
+
+  /* ── HEADER ── */
+  header {
+    border-bottom: 3px solid var(--ink);
+    padding: 0 24px;
+    display: flex;
+    align-items: stretch;
+    justify-content: space-between;
+    background: var(--paper);
+    position: sticky;
+    top: 0;
+    z-index: 100;
+  }
+
+  .logo-block {
+    padding: 16px 0;
+    border-right: 2px solid var(--ink);
+    padding-right: 24px;
+    margin-right: 24px;
+  }
+
+  .logo {
+    font-family: var(--f-display);
+    font-size: 22px;
+    font-weight: 900;
+    letter-spacing: 0.08em;
+    line-height: 1;
+  }
+
+  .logo-sub {
+    font-size: 9px;
+    letter-spacing: 0.25em;
+    color: var(--muted);
+    margin-top: 3px;
+    text-transform: uppercase;
+  }
+
+  .nav-tabs {
+    display: flex;
+    align-items: stretch;
+    gap: 0;
+    flex: 1;
+  }
+
+  .nav-tab {
+    padding: 0 20px;
+    font-family: var(--f-mono);
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    cursor: pointer;
+    border: none;
+    background: none;
+    color: var(--muted);
+    border-bottom: 3px solid transparent;
+    margin-bottom: -3px;
+    transition: all 0.15s;
+    display: flex;
+    align-items: center;
+    border-right: 1px solid var(--rule);
+  }
+
+  .nav-tab.active {
+    color: var(--ink);
+    border-bottom-color: var(--ink);
+    background: var(--accent-light);
+  }
+
+  .nav-tab:hover:not(.active) {
+    color: var(--ink);
+    background: var(--paper-dark);
+  }
+
+  .header-right {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding-left: 16px;
+    border-left: 2px solid var(--ink);
+  }
+
+  .calc-btn {
+    width: 38px;
+    height: 38px;
+    border: 2px solid var(--ink);
+    background: var(--paper);
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 18px;
+    transition: all 0.15s;
+    position: relative;
+  }
+
+  .calc-btn:hover {
+    background: var(--ink);
+    color: var(--paper);
+  }
+
+  /* ── MAIN ── */
+  main {
+    max-width: 1100px;
+    margin: 0 auto;
+    padding: 32px 24px;
+  }
+
+  .section-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 24px;
+    padding-bottom: 12px;
+    border-bottom: 2px solid var(--ink);
+  }
+
+  .section-title {
+    font-family: var(--f-display);
+    font-size: 20px;
+    font-weight: 700;
+    letter-spacing: 0.05em;
+  }
+
+  .section-date {
+    font-size: 10px;
+    color: var(--muted);
+    letter-spacing: 0.1em;
+  }
+
+  /* ── ADD BUTTON ── */
+  .btn-primary {
+    font-family: var(--f-mono);
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    padding: 9px 18px;
+    background: var(--ink);
+    color: var(--paper);
+    border: 2px solid var(--ink);
+    cursor: pointer;
+    transition: all 0.15s;
+  }
+
+  .btn-primary:hover {
+    background: var(--paper);
+    color: var(--ink);
+  }
+
+  .btn-secondary {
+    font-family: var(--f-mono);
+    font-size: 10px;
+    font-weight: 500;
+    letter-spacing: 0.08em;
+    padding: 6px 12px;
+    background: transparent;
+    color: var(--ink);
+    border: 1.5px solid var(--ink);
+    cursor: pointer;
+    transition: all 0.15s;
+  }
+
+  .btn-secondary:hover { background: var(--paper-dark); }
+
+  .btn-danger {
+    font-family: var(--f-mono);
+    font-size: 10px;
+    font-weight: 500;
+    padding: 6px 12px;
+    background: transparent;
+    color: var(--red);
+    border: 1.5px solid var(--red);
+    cursor: pointer;
+    transition: all 0.15s;
+  }
+
+  .btn-danger:hover { background: var(--red); color: white; }
+
+  /* ── SITE CARD ── */
+  .site-card {
+    border: 2px solid var(--ink);
+    background: var(--card-bg);
+    margin-bottom: 16px;
+    position: relative;
+  }
+
+  .site-card-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 14px 18px;
+    border-bottom: 1.5px solid var(--rule);
+    background: var(--paper-dark);
+  }
+
+  .site-name-row {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+  }
+
+  .site-name {
+    font-family: var(--f-display);
+    font-size: 17px;
+    font-weight: 700;
+  }
+
+  .site-link {
+    font-size: 14px;
+    color: var(--muted);
+    text-decoration: none;
+    transition: color 0.1s;
+    line-height: 1;
+  }
+
+  .site-link:hover { color: var(--ink); }
+
+  .site-card-actions {
+    display: flex;
+    gap: 8px;
+  }
+
+  .site-card-body {
+    padding: 16px 18px;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 16px;
+  }
+
+  .field-group {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+  }
+
+  .field-row {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+
+  .field-label {
+    font-size: 9px;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: var(--muted);
+    min-width: 72px;
+    flex-shrink: 0;
+  }
+
+  .field-value {
+    font-family: var(--f-mono);
+    font-size: 13px;
+    font-weight: 500;
+    color: var(--ink);
+    word-break: break-all;
+  }
+
+  .field-value.mono-secret {
+    letter-spacing: 0.05em;
+    font-size: 12px;
+  }
+
+  .icon-btn {
+    background: none;
+    border: none;
+    cursor: pointer;
+    font-size: 13px;
+    padding: 2px 5px;
+    color: var(--muted);
+    transition: color 0.1s;
+    flex-shrink: 0;
+    border: 1px solid transparent;
+    font-family: monospace;
+  }
+
+  .icon-btn:hover {
+    color: var(--ink);
+    border-color: var(--rule);
+    background: var(--paper-dark);
+  }
+
+  .icon-btn.copied {
+    color: var(--green);
+    border-color: var(--green);
+  }
+
+  .site-card-stats {
+    padding: 12px 18px;
+    border-top: 1.5px solid var(--rule);
+    display: flex;
+    gap: 0;
+    background: var(--paper);
+  }
+
+  .stat-block {
+    flex: 1;
+    padding: 8px 12px;
+    border-right: 1px solid var(--rule);
+    text-align: center;
+  }
+
+  .stat-block:last-child { border-right: none; }
+
+  .stat-val {
+    font-family: var(--f-mono);
+    font-size: 16px;
+    font-weight: 600;
+    color: var(--ink);
+  }
+
+  .stat-val.positive { color: var(--green); }
+  .stat-val.negative { color: var(--red); }
+
+  .stat-label {
+    font-size: 9px;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    color: var(--muted);
+    margin-top: 3px;
+  }
+
+  /* ── CHARACTER CARDS ── */
+  .char-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+    gap: 16px;
+  }
+
+  .char-card {
+    border: 2px solid var(--ink);
+    background: var(--card-bg);
+    padding: 20px 16px;
+    text-align: center;
+    position: relative;
+    transition: transform 0.1s;
+  }
+
+  .char-card:hover {
+    transform: translate(-2px, -2px);
+    box-shadow: 4px 4px 0 var(--ink);
+  }
+
+  .char-avatar {
+    width: 64px;
+    height: 64px;
+    border: 2px solid var(--ink);
+    margin: 0 auto 12px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 32px;
+    background: var(--paper-dark);
+    overflow: hidden;
+  }
+
+  .char-avatar img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+
+  .char-name {
+    font-family: var(--f-display);
+    font-size: 15px;
+    font-weight: 700;
+    margin-bottom: 6px;
+  }
+
+  .char-since {
+    font-size: 10px;
+    color: var(--muted);
+    letter-spacing: 0.1em;
+    margin-bottom: 10px;
+  }
+
+  .char-days {
+    font-family: var(--f-mono);
+    font-size: 28px;
+    font-weight: 600;
+    line-height: 1;
+    margin-bottom: 2px;
+  }
+
+  .char-days-label {
+    font-size: 9px;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: var(--muted);
+    margin-bottom: 10px;
+  }
+
+  .char-note {
+    font-size: 11px;
+    color: var(--muted);
+    font-style: italic;
+    border-top: 1px solid var(--rule);
+    padding-top: 8px;
+    margin-top: 4px;
+    font-family: var(--f-note);
+    line-height: 1.5;
+    min-height: 24px;
+  }
+
+  .char-actions {
+    display: flex;
+    gap: 6px;
+    justify-content: center;
+    margin-top: 12px;
+  }
+
+  /* ── ADD CARD ── */
+  .add-card {
+    border: 2px dashed var(--rule-strong);
+    background: transparent;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    min-height: 240px;
+    transition: all 0.15s;
+    color: var(--muted);
+    font-size: 11px;
+    letter-spacing: 0.15em;
+    flex-direction: column;
+    gap: 8px;
+  }
+
+  .add-card:hover {
+    border-color: var(--ink);
+    color: var(--ink);
+    background: var(--paper-dark);
+  }
+
+  .add-card-icon { font-size: 24px; }
+
+  /* ── MODAL ── */
+  .modal-overlay {
+    position: fixed;
+    inset: 0;
+    background: rgba(26,26,26,0.6);
+    z-index: 200;
+    display: none;
+    align-items: center;
+    justify-content: center;
+    padding: 24px;
+  }
+
+  .modal-overlay.open { display: flex; }
+
+  .modal {
+    background: var(--paper);
+    border: 3px solid var(--ink);
+    width: 100%;
+    max-width: 560px;
+    max-height: 90vh;
+    overflow-y: auto;
+    position: relative;
+  }
+
+  .modal-header {
+    padding: 16px 20px;
+    border-bottom: 2px solid var(--ink);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    background: var(--paper-dark);
+    position: sticky;
+    top: 0;
+  }
+
+  .modal-title {
+    font-family: var(--f-display);
+    font-size: 16px;
+    font-weight: 700;
+    letter-spacing: 0.05em;
+  }
+
+  .modal-close {
+    background: none;
+    border: none;
+    font-size: 20px;
+    cursor: pointer;
+    color: var(--muted);
+    line-height: 1;
+    padding: 2px 6px;
+  }
+
+  .modal-close:hover { color: var(--ink); }
+
+  .modal-body { padding: 20px; }
+
+  .form-group {
+    margin-bottom: 16px;
+  }
+
+  .form-label {
+    display: block;
+    font-size: 10px;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: var(--muted);
+    margin-bottom: 6px;
+  }
+
+  .form-input {
+    width: 100%;
+    padding: 9px 12px;
+    border: 1.5px solid var(--rule-strong);
+    background: var(--card-bg);
+    font-family: var(--f-mono);
+    font-size: 13px;
+    color: var(--ink);
+    outline: none;
+    transition: border-color 0.15s;
+  }
+
+  .form-input:focus { border-color: var(--ink); }
+
+  .form-row {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 12px;
+  }
+
+  .form-hint {
+    font-size: 10px;
+    color: var(--muted);
+    margin-top: 4px;
+  }
+
+  .modal-footer {
+    padding: 16px 20px;
+    border-top: 1.5px solid var(--rule);
+    display: flex;
+    justify-content: flex-end;
+    gap: 10px;
+  }
+
+  .divider {
+    border: none;
+    border-top: 1px dashed var(--rule-strong);
+    margin: 20px 0 16px;
+  }
+
+  .divider-label {
+    font-size: 9px;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: var(--muted);
+    margin-bottom: 12px;
+  }
+
+  /* ── CALCULATOR POPUP ── */
+  .calc-popup {
+    position: fixed;
+    top: 72px;
+    right: 24px;
+    width: 300px;
+    background: var(--paper);
+    border: 2.5px solid var(--ink);
+    z-index: 150;
+    display: none;
+    box-shadow: 6px 6px 0 var(--ink);
+  }
+
+  .calc-popup.open { display: block; }
+
+  .calc-popup-header {
+    padding: 12px 16px;
+    border-bottom: 2px solid var(--ink);
+    background: var(--paper-dark);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+
+  .calc-popup-title {
+    font-family: var(--f-display);
+    font-size: 14px;
+    font-weight: 700;
+    letter-spacing: 0.05em;
+  }
+
+  .calc-popup-body { padding: 16px; }
+
+  .calc-result {
+    border: 1.5px solid var(--ink);
+    padding: 12px;
+    background: var(--accent-light);
+    text-align: center;
+    margin-top: 14px;
+  }
+
+  .calc-result-val {
+    font-family: var(--f-mono);
+    font-size: 22px;
+    font-weight: 600;
+  }
+
+  .calc-result-label {
+    font-size: 10px;
+    color: var(--muted);
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    margin-top: 2px;
+  }
+
+  /* ── TOOLBAR ── */
+  .toolbar {
+    display: flex;
+    gap: 10px;
+    align-items: center;
+    margin-bottom: 20px;
+    flex-wrap: wrap;
+  }
+
+  .sort-select {
+    font-family: var(--f-mono);
+    font-size: 11px;
+    padding: 7px 10px;
+    border: 1.5px solid var(--rule-strong);
+    background: var(--card-bg);
+    color: var(--ink);
+    cursor: pointer;
+    outline: none;
+  }
+
+  /* ── EMPTY ── */
+  .empty-state {
+    text-align: center;
+    padding: 60px 24px;
+    color: var(--muted);
+    border: 2px dashed var(--rule);
+  }
+
+  .empty-icon { font-size: 36px; margin-bottom: 12px; }
+  .empty-text { font-size: 12px; letter-spacing: 0.12em; }
+
+  /* ── AVATAR UPLOAD ── */
+  .avatar-upload-area {
+    width: 72px;
+    height: 72px;
+    border: 2px dashed var(--rule-strong);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    font-size: 24px;
+    background: var(--paper-dark);
+    position: relative;
+    overflow: hidden;
+    flex-shrink: 0;
+  }
+
+  .avatar-upload-area img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    position: absolute;
+  }
+
+  .avatar-row {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    margin-bottom: 16px;
+  }
+
+  .avatar-options { flex: 1; }
+
+  /* ── TABS HIDDEN ── */
+  .tab-panel { display: none; }
+  .tab-panel.active { display: block; }
+
+  /* ── TOAST ── */
+  .toast {
+    position: fixed;
+    bottom: 24px;
+    left: 50%;
+    transform: translateX(-50%) translateY(20px);
+    background: var(--ink);
+    color: var(--paper);
+    font-size: 12px;
+    letter-spacing: 0.1em;
+    padding: 10px 20px;
+    opacity: 0;
+    transition: all 0.2s;
+    pointer-events: none;
+    z-index: 999;
+    font-family: var(--f-mono);
+    border: 1px solid var(--paper);
+  }
+
+  .toast.show {
+    opacity: 1;
+    transform: translateX(-50%) translateY(0);
+  }
+
+  /* mobile tweak */
+  @media (max-width: 600px) {
+    .site-card-body { grid-template-columns: 1fr; }
+    .form-row { grid-template-columns: 1fr; }
+    .char-grid { grid-template-columns: repeat(auto-fill, minmax(160px, 1fr)); }
+    .stat-val { font-size: 13px; }
+    header { padding: 0 12px; }
+    main { padding: 20px 12px; }
+  }
+</style>
+</head>
+<body>
+
+<!-- HEADER -->
+<header>
+  <div class="logo-block">
+    <div class="logo">AIRP</div>
+    <div class="logo-sub">Ledger · v1.0</div>
+  </div>
+  <nav class="nav-tabs">
+    <button class="nav-tab active" onclick="switchTab('api')">◈ API 站点</button>
+    <button class="nav-tab" onclick="switchTab('char')">◇ 角色纪念日</button>
+  </nav>
+  <div class="header-right">
+    <button class="calc-btn" onclick="toggleFontPicker()" title="字体主题" id="fontBtn">Aa</button>
+    <button class="calc-btn" onclick="toggleCalc()" title="额度换算器">🧮</button>
+  </div>
+</header>
+
+<!-- FONT PICKER POPUP -->
+<div class="font-popup" id="fontPopup">
+  <div class="font-popup-header">
+    <span class="font-popup-title">字体主题</span>
+    <button class="modal-close" onclick="toggleFontPicker()">×</button>
+  </div>
+  <div class="font-option" data-font="default" onclick="setFont('default')">
+    <div class="font-option-preview" style="font-family:'Playfair Display',serif">Aa</div>
+    <div>
+      <div class="font-option-name">默认</div>
+      <div class="font-option-sub">Playfair + IBM Plex Mono</div>
+    </div>
+  </div>
+  <div class="font-option" data-font="mingchao" onclick="setFont('mingchao')">
+    <div class="font-option-preview" style="font-family:'HuiWenMingChaoTi',serif">明</div>
+    <div>
+      <div class="font-option-name">汇文明朝体</div>
+      <div class="font-option-sub">古典书卷 · 明朝风格</div>
+    </div>
+  </div>
+  <div class="font-option" data-font="wenkai" onclick="setFont('wenkai')">
+    <div class="font-option-preview" style="font-family:'LXGW WenKai',serif">楷</div>
+    <div>
+      <div class="font-option-name">霞鹜文楷</div>
+      <div class="font-option-sub">清秀文艺 · 宋楷融合</div>
+    </div>
+  </div>
+  <div class="font-option" data-font="pixel" onclick="setFont('pixel')">
+    <div class="font-option-preview" style="font-family:'Zpix',monospace">像</div>
+    <div>
+      <div class="font-option-name">像素风 Zpix</div>
+      <div class="font-option-sub">点阵复古 · 游戏感</div>
+    </div>
+  </div>
+  <div class="font-option" data-font="typewriter" onclick="setFont('typewriter')">
+    <div class="font-option-preview" style="font-family:'Special Elite',serif">Ty</div>
+    <div>
+      <div class="font-option-name">打字机</div>
+      <div class="font-option-sub">Special Elite · 复古英文</div>
+    </div>
+  </div>
+</div>
+
+<!-- CALCULATOR POPUP -->
+<div class="calc-popup" id="calcPopup">
+  <div class="calc-popup-header">
+    <span class="calc-popup-title">额度换算器</span>
+    <button class="modal-close" onclick="toggleCalc()">×</button>
+  </div>
+  <div class="calc-popup-body">
+    <div class="form-group">
+      <label class="form-label">选择站点</label>
+      <select class="form-input sort-select" id="calcSite" onchange="calcUpdate()" style="width:100%">
+        <option value="">— 请选择 —</option>
+      </select>
+    </div>
+    <div class="form-group">
+      <label class="form-label">消耗额度（次）</label>
+      <input class="form-input" type="number" id="calcAmount" placeholder="0" oninput="calcUpdate()">
+    </div>
+    <div id="calcResult" class="calc-result" style="display:none">
+      <div class="calc-result-val" id="calcResultVal">—</div>
+      <div class="calc-result-label">RMB / 次</div>
+      <div style="font-size:10px;color:var(--muted);margin-top:6px" id="calcResultNote"></div>
+    </div>
+  </div>
+</div>
+
+<!-- MAIN -->
+<main>
+
+  <!-- API TAB -->
+  <div class="tab-panel active" id="tab-api">
+    <div class="section-header">
+      <div>
+        <div class="section-title">API 站点管理</div>
+        <div class="section-date" id="todayDate"></div>
+      </div>
+      <button class="btn-primary" onclick="openSiteModal()">＋ 新增站点</button>
+    </div>
+
+    <div class="toolbar">
+      <label class="form-label" style="margin:0">排序：</label>
+      <select class="sort-select" onchange="renderSites()" id="siteSort">
+        <option value="name">名称</option>
+        <option value="balance">余额（高→低）</option>
+        <option value="spent">花费（高→低）</option>
+      </select>
+    </div>
+
+    <div id="siteList"></div>
+  </div>
+
+  <!-- CHAR TAB -->
+  <div class="tab-panel" id="tab-char">
+    <div class="section-header">
+      <div>
+        <div class="section-title">角色纪念日</div>
+        <div class="section-date">陪伴，是一种温柔的记录</div>
+      </div>
+      <button class="btn-primary" onclick="openCharModal()">＋ 新增角色</button>
+    </div>
+
+    <div class="toolbar">
+      <label class="form-label" style="margin:0">排序：</label>
+      <select class="sort-select" onchange="renderChars()" id="charSort">
+        <option value="days_desc">陪伴天数（多→少）</option>
+        <option value="days_asc">陪伴天数（少→多）</option>
+        <option value="name">名字</option>
+      </select>
+    </div>
+
+    <div class="char-grid" id="charGrid"></div>
+  </div>
+
+</main>
+
+<!-- SITE MODAL -->
+<div class="modal-overlay" id="siteModal">
+  <div class="modal">
+    <div class="modal-header">
+      <span class="modal-title" id="siteModalTitle">新增站点</span>
+      <button class="modal-close" onclick="closeSiteModal()">×</button>
+    </div>
+    <div class="modal-body">
+      <div class="form-group">
+        <label class="form-label">站点名称 *</label>
+        <input class="form-input" id="f_name" placeholder="如：NekoAPI">
+      </div>
+      <div class="form-row">
+        <div class="form-group">
+          <label class="form-label">官网链接</label>
+          <input class="form-input" id="f_website" placeholder="https://...">
+        </div>
+        <div class="form-group">
+          <label class="form-label">API 端点</label>
+          <input class="form-input" id="f_endpoint" placeholder="https://api.xxx.com/v1">
+        </div>
+      </div>
+      <div class="form-group">
+        <label class="form-label">密钥</label>
+        <input class="form-input" id="f_key" placeholder="sk-...">
+      </div>
+
+      <hr class="divider">
+      <div class="divider-label">💰 消费记录</div>
+
+      <div class="form-row">
+        <div class="form-group">
+          <label class="form-label">累计充值金额（元）</label>
+          <input class="form-input" type="number" id="f_spent" placeholder="0">
+        </div>
+        <div class="form-group">
+          <label class="form-label">当前余额（额度）</label>
+          <input class="form-input" type="number" id="f_balance" placeholder="0">
+        </div>
+      </div>
+      <div class="form-row">
+        <div class="form-group">
+          <label class="form-label">充值额度</label>
+          <input class="form-input" type="number" id="f_credit_top" placeholder="0">
+        </div>
+        <div class="form-group">
+          <label class="form-label">其他额度（奖励/签到等）</label>
+          <input class="form-input" type="number" id="f_credit_other" placeholder="0">
+        </div>
+      </div>
+
+      <hr class="divider">
+      <div class="divider-label">📐 汇率设置</div>
+
+      <div class="form-row">
+        <div class="form-group">
+          <label class="form-label">1 元 = ? 额度</label>
+          <input class="form-input" type="number" id="f_rate_cny" placeholder="如：10">
+          <div class="form-hint">充值比例</div>
+        </div>
+        <div class="form-group">
+          <label class="form-label">1 额度 = ? 元</label>
+          <input class="form-input" type="number" id="f_rate_credit" placeholder="如：0.1" step="0.0001">
+          <div class="form-hint">官方单价</div>
+        </div>
+      </div>
+      <div class="form-group">
+        <label class="form-label">VIP 折扣（%）</label>
+        <input class="form-input" type="number" id="f_vip" placeholder="如：80（即八折）" min="1" max="100">
+        <div class="form-hint">留空则按原价计算</div>
+      </div>
+    </div>
+    <div class="modal-footer">
+      <button class="btn-secondary" onclick="closeSiteModal()">取消</button>
+      <button class="btn-primary" onclick="saveSite()">保存</button>
+    </div>
+  </div>
+</div>
+
+<!-- CHAR MODAL -->
+<div class="modal-overlay" id="charModal">
+  <div class="modal">
+    <div class="modal-header">
+      <span class="modal-title" id="charModalTitle">新增角色</span>
+      <button class="modal-close" onclick="closeCharModal()">×</button>
+    </div>
+    <div class="modal-body">
+      <div class="avatar-row">
+        <div class="avatar-upload-area" id="avatarPreview" onclick="document.getElementById('avatarFile').click()">
+          <span id="avatarEmoji">🎭</span>
+          <img id="avatarImg" src="" style="display:none">
+        </div>
+        <div class="avatar-options">
+          <div class="form-group" style="margin-bottom:8px">
+            <label class="form-label">Emoji 头像</label>
+            <input class="form-input" id="f_emoji" placeholder="🎭" maxlength="2" oninput="updateEmojiPreview()">
+          </div>
+          <div style="font-size:10px;color:var(--muted);letter-spacing:0.08em">或点击左侧上传图片</div>
+          <input type="file" id="avatarFile" accept="image/*" style="display:none" onchange="handleAvatarUpload(event)">
+        </div>
+      </div>
+
+      <div class="form-row">
+        <div class="form-group">
+          <label class="form-label">角色名 *</label>
+          <input class="form-input" id="f_charname" placeholder="角色名">
+        </div>
+        <div class="form-group">
+          <label class="form-label">认识日期 *</label>
+          <input class="form-input" type="date" id="f_since">
+        </div>
+      </div>
+      <div class="form-group">
+        <label class="form-label">备注</label>
+        <input class="form-input" id="f_charnote" placeholder="一句话描述...">
+      </div>
+    </div>
+    <div class="modal-footer">
+      <button class="btn-secondary" onclick="closeCharModal()">取消</button>
+      <button class="btn-primary" onclick="saveChar()">保存</button>
+    </div>
+  </div>
+</div>
+
+<!-- TOAST -->
+<div class="toast" id="toast"></div>
+
+<script>
+// ── FONT SWITCHER ──
+function toggleFontPicker() {
+  document.getElementById('fontPopup').classList.toggle('open');
+  document.getElementById('calcPopup').classList.remove('open');
+}
+
+function setFont(key) {
+  document.body.setAttribute('data-font', key);
+  localStorage.setItem('airp_font', key);
+  document.querySelectorAll('.font-option').forEach(el => {
+    el.classList.toggle('active', el.dataset.font === key);
+  });
+}
+
+// ── DATA ──
+let sites = JSON.parse(localStorage.getItem('airp_sites') || '[]');
+let chars = JSON.parse(localStorage.getItem('airp_chars') || '[]');
+let editingSiteId = null;
+let editingCharId = null;
+let avatarData = null;
+
+function save() {
+  localStorage.setItem('airp_sites', JSON.stringify(sites));
+  localStorage.setItem('airp_chars', JSON.stringify(chars));
+}
+
+function uid() { return Date.now().toString(36) + Math.random().toString(36).slice(2); }
+
+// ── TOAST ──
+function toast(msg, dur=2000) {
+  const t = document.getElementById('toast');
+  t.textContent = msg;
+  t.classList.add('show');
+  setTimeout(() => t.classList.remove('show'), dur);
+}
+
+// ── TABS ──
+function switchTab(tab) {
+  document.querySelectorAll('.tab-panel').forEach(p => p.classList.remove('active'));
+  document.querySelectorAll('.nav-tab').forEach(b => b.classList.remove('active'));
+  document.getElementById('tab-' + tab).classList.add('active');
+  event.currentTarget.classList.add('active');
+}
+
+// ── DATE ──
+function todayStr() {
+  return new Date().toLocaleDateString('zh-CN', { year:'numeric', month:'long', day:'numeric', weekday:'long' });
+}
+
+function daysBetween(dateStr) {
+  const d = new Date(dateStr);
+  const now = new Date();
+  d.setHours(0,0,0,0); now.setHours(0,0,0,0);
+  return Math.floor((now - d) / 86400000);
+}
+
+// ── COPY ──
+async function copyText(text, btnEl) {
+  try {
+    await navigator.clipboard.writeText(text);
+    const orig = btnEl.textContent;
+    btnEl.textContent = '✓';
+    btnEl.classList.add('copied');
+    setTimeout(() => { btnEl.textContent = orig; btnEl.classList.remove('copied'); }, 1500);
+  } catch { toast('复制失败，请手动复制'); }
+}
+
+// ── CALCULATOR ──
+function toggleCalc() {
+  const p = document.getElementById('calcPopup');
+  p.classList.toggle('open');
+  document.getElementById('fontPopup').classList.remove('open');
+  if (p.classList.contains('open')) populateCalcSites();
+}
+
+function populateCalcSites() {
+  const sel = document.getElementById('calcSite');
+  sel.innerHTML = '<option value="">— 请选择 —</option>';
+  sites.forEach(s => {
+    const o = document.createElement('option');
+    o.value = s.id; o.textContent = s.name;
+    sel.appendChild(o);
+  });
+}
+
+function calcUpdate() {
+  const sid = document.getElementById('calcSite').value;
+  const amt = parseFloat(document.getElementById('calcAmount').value);
+  const res = document.getElementById('calcResult');
+  if (!sid || isNaN(amt) || amt <= 0) { res.style.display='none'; return; }
+  const site = sites.find(s => s.id === sid);
+  if (!site || !site.rate_credit) { res.style.display='none'; return; }
+  let pricePerCredit = parseFloat(site.rate_credit);
+  if (site.vip && parseFloat(site.vip) > 0) pricePerCredit *= parseFloat(site.vip) / 100;
+  const rmb = (amt * pricePerCredit).toFixed(4);
+  document.getElementById('calcResultVal').textContent = '¥ ' + rmb;
+  let note = `${site.name} · 1额度=¥${pricePerCredit.toFixed(6)}`;
+  if (site.vip) note += ` (${site.vip}折)`;
+  document.getElementById('calcResultNote').textContent = note;
+  res.style.display = 'block';
+}
+
+// ── SITE MODAL ──
+function openSiteModal(id=null) {
+  editingSiteId = id;
+  const modal = document.getElementById('siteModal');
+  document.getElementById('siteModalTitle').textContent = id ? '编辑站点' : '新增站点';
+  const fields = ['name','website','endpoint','key','spent','balance','credit_top','credit_other','rate_cny','rate_credit','vip'];
+  fields.forEach(f => document.getElementById('f_' + f).value = '');
+  if (id) {
+    const s = sites.find(x => x.id === id);
+    if (s) fields.forEach(f => { if (s[f] !== undefined) document.getElementById('f_' + f).value = s[f]; });
+  }
+  modal.classList.add('open');
+}
+
+function closeSiteModal() { document.getElementById('siteModal').classList.remove('open'); }
+
+function saveSite() {
+  const name = document.getElementById('f_name').value.trim();
+  if (!name) { toast('请填写站点名称'); return; }
+  const data = {
+    id: editingSiteId || uid(),
+    name,
+    website: document.getElementById('f_website').value.trim(),
+    endpoint: document.getElementById('f_endpoint').value.trim(),
+    key: document.getElementById('f_key').value.trim(),
+    spent: document.getElementById('f_spent').value,
+    balance: document.getElementById('f_balance').value,
+    credit_top: document.getElementById('f_credit_top').value,
+    credit_other: document.getElementById('f_credit_other').value,
+    rate_cny: document.getElementById('f_rate_cny').value,
+    rate_credit: document.getElementById('f_rate_credit').value,
+    vip: document.getElementById('f_vip').value,
+  };
+  if (editingSiteId) {
+    const i = sites.findIndex(s => s.id === editingSiteId);
+    sites[i] = data;
+  } else {
+    sites.push(data);
+  }
+  save(); closeSiteModal(); renderSites(); populateCalcSites();
+  toast(editingSiteId ? '站点已更新' : '站点已添加');
+}
+
+function deleteSite(id) {
+  if (!confirm('确认删除此站点？')) return;
+  sites = sites.filter(s => s.id !== id);
+  save(); renderSites(); populateCalcSites();
+  toast('已删除');
+}
+
+// ── KEY VISIBILITY ──
+const keyVis = {};
+function toggleKey(id) {
+  keyVis[id] = !keyVis[id];
+  renderSites();
+}
+
+// ── RENDER SITES ──
+function renderSites() {
+  const sort = document.getElementById('siteSort').value;
+  let list = [...sites];
+  if (sort === 'name') list.sort((a,b) => a.name.localeCompare(b.name));
+  else if (sort === 'balance') list.sort((a,b) => (parseFloat(b.balance)||0) - (parseFloat(a.balance)||0));
+  else if (sort === 'spent') list.sort((a,b) => (parseFloat(b.spent)||0) - (parseFloat(a.spent)||0));
+
+  const el = document.getElementById('siteList');
+  if (!list.length) {
+    el.innerHTML = `<div class="empty-state"><div class="empty-icon">◈</div><div class="empty-text">暂无站点 · 点击右上角新增</div></div>`;
+    return;
+  }
+
+  el.innerHTML = list.map(s => {
+    const totalCredit = (parseFloat(s.credit_top)||0) + (parseFloat(s.credit_other)||0);
+    const bal = parseFloat(s.balance) || 0;
+    let balRmb = '—';
+    if (s.rate_credit && bal > 0) {
+      let p = parseFloat(s.rate_credit);
+      if (s.vip && parseFloat(s.vip) > 0) p *= parseFloat(s.vip)/100;
+      balRmb = '¥' + (bal * p).toFixed(2);
+    }
+    const keyShown = keyVis[s.id];
+    const keyDisplay = s.key ? (keyShown ? s.key : s.key.slice(0,6) + '••••••••' + s.key.slice(-4)) : '—';
+
+    return `
+    <div class="site-card">
+      <div class="site-card-header">
+        <div class="site-name-row">
+          <span class="site-name">${escHtml(s.name)}</span>
+          ${s.website ? `<a class="site-link" href="${escHtml(s.website)}" target="_blank" title="打开官网">🔗</a>` : ''}
+        </div>
+        <div class="site-card-actions">
+          <button class="btn-secondary" onclick="openSiteModal('${s.id}')">编辑</button>
+          <button class="btn-danger" onclick="deleteSite('${s.id}')">删除</button>
+        </div>
+      </div>
+      <div class="site-card-body">
+        <div class="field-group">
+          <div class="field-row">
+            <span class="field-label">端点</span>
+            <span class="field-value" style="font-size:11px;flex:1;word-break:break-all">${escHtml(s.endpoint || '—')}</span>
+            ${s.endpoint ? `<button class="icon-btn" onclick="copyText('${escHtml(s.endpoint)}', this)" title="复制">⎘</button>` : ''}
+          </div>
+          <div class="field-row">
+            <span class="field-label">密钥</span>
+            <span class="field-value mono-secret" style="flex:1">${escHtml(keyDisplay)}</span>
+            ${s.key ? `<button class="icon-btn" onclick="toggleKey('${s.id}')" title="${keyShown?'隐藏':'显示'}">${keyShown?'🙈':'👁'}</button>` : ''}
+            ${s.key ? `<button class="icon-btn" onclick="copyText('${escHtml(s.key)}', this)" title="复制">⎘</button>` : ''}
+          </div>
+          <div class="field-row">
+            <span class="field-label">VIP折扣</span>
+            <span class="field-value">${s.vip ? s.vip + '折' : '无'}</span>
+          </div>
+        </div>
+        <div class="field-group">
+          <div class="field-row">
+            <span class="field-label">1元=</span>
+            <span class="field-value">${s.rate_cny || '—'} 额度</span>
+          </div>
+          <div class="field-row">
+            <span class="field-label">1额度=</span>
+            <span class="field-value">${s.rate_credit || '—'} 元</span>
+          </div>
+          <div class="field-row">
+            <span class="field-label">充值额度</span>
+            <span class="field-value">${fmtNum(s.credit_top)}</span>
+          </div>
+          <div class="field-row">
+            <span class="field-label">其他额度</span>
+            <span class="field-value">${fmtNum(s.credit_other)}</span>
+          </div>
+        </div>
+      </div>
+      <div class="site-card-stats">
+        <div class="stat-block">
+          <div class="stat-val negative">¥${fmtNum(s.spent)}</div>
+          <div class="stat-label">累计充值</div>
+        </div>
+        <div class="stat-block">
+          <div class="stat-val">${fmtNum(totalCredit)}</div>
+          <div class="stat-label">总额度</div>
+        </div>
+        <div class="stat-block">
+          <div class="stat-val positive">${fmtNum(s.balance)}</div>
+          <div class="stat-label">当前余额</div>
+        </div>
+        <div class="stat-block">
+          <div class="stat-val positive">${balRmb}</div>
+          <div class="stat-label">余额折RMB</div>
+        </div>
+      </div>
+    </div>`;
+  }).join('');
+}
+
+// ── CHAR MODAL ──
+function openCharModal(id=null) {
+  editingCharId = id;
+  avatarData = null;
+  document.getElementById('charModalTitle').textContent = id ? '编辑角色' : '新增角色';
+  document.getElementById('f_charname').value = '';
+  document.getElementById('f_since').value = '';
+  document.getElementById('f_charnote').value = '';
+  document.getElementById('f_emoji').value = '';
+  document.getElementById('avatarEmoji').textContent = '🎭';
+  document.getElementById('avatarImg').style.display = 'none';
+  document.getElementById('avatarImg').src = '';
+  if (id) {
+    const c = chars.find(x => x.id === id);
+    if (c) {
+      document.getElementById('f_charname').value = c.name || '';
+      document.getElementById('f_since').value = c.since || '';
+      document.getElementById('f_charnote').value = c.note || '';
+      document.getElementById('f_emoji').value = c.emoji || '';
+      document.getElementById('avatarEmoji').textContent = c.emoji || '🎭';
+      if (c.avatar) {
+        avatarData = c.avatar;
+        document.getElementById('avatarImg').src = c.avatar;
+        document.getElementById('avatarImg').style.display = 'block';
+        document.getElementById('avatarEmoji').style.display = 'none';
+      }
+    }
+  }
+  document.getElementById('charModal').classList.add('open');
+}
+
+function closeCharModal() { document.getElementById('charModal').classList.remove('open'); }
+
+function updateEmojiPreview() {
+  const e = document.getElementById('f_emoji').value.trim();
+  document.getElementById('avatarEmoji').textContent = e || '🎭';
+  document.getElementById('avatarImg').style.display = 'none';
+  document.getElementById('avatarEmoji').style.display = 'flex';
+  avatarData = null;
+}
+
+function handleAvatarUpload(e) {
+  const file = e.target.files[0];
+  if (!file) return;
+  const reader = new FileReader();
+  reader.onload = ev => {
+    avatarData = ev.target.result;
+    document.getElementById('avatarImg').src = avatarData;
+    document.getElementById('avatarImg').style.display = 'block';
+    document.getElementById('avatarEmoji').style.display = 'none';
+  };
+  reader.readAsDataURL(file);
+}
+
+function saveChar() {
+  const name = document.getElementById('f_charname').value.trim();
+  const since = document.getElementById('f_since').value;
+  if (!name || !since) { toast('请填写角色名和认识日期'); return; }
+  const data = {
+    id: editingCharId || uid(),
+    name,
+    since,
+    note: document.getElementById('f_charnote').value.trim(),
+    emoji: document.getElementById('f_emoji').value.trim() || '🎭',
+    avatar: avatarData || null,
+  };
+  if (editingCharId) {
+    const i = chars.findIndex(c => c.id === editingCharId);
+    chars[i] = data;
+  } else {
+    chars.push(data);
+  }
+  save(); closeCharModal(); renderChars();
+  toast(editingCharId ? '角色已更新' : '角色已添加');
+}
+
+function deleteChar(id) {
+  if (!confirm('确认删除此角色？')) return;
+  chars = chars.filter(c => c.id !== id);
+  save(); renderChars();
+  toast('已删除');
+}
+
+// ── RENDER CHARS ──
+function renderChars() {
+  const sort = document.getElementById('charSort').value;
+  let list = chars.map(c => ({ ...c, days: daysBetween(c.since) }));
+  if (sort === 'days_desc') list.sort((a,b) => b.days - a.days);
+  else if (sort === 'days_asc') list.sort((a,b) => a.days - b.days);
+  else list.sort((a,b) => a.name.localeCompare(b.name));
+
+  const grid = document.getElementById('charGrid');
+
+  const cards = list.map(c => {
+    const avatarInner = c.avatar
+      ? `<img src="${c.avatar}" alt="${escHtml(c.name)}">`
+      : `<span style="font-size:32px">${c.emoji || '🎭'}</span>`;
+    return `
+    <div class="char-card">
+      <div class="char-avatar">${avatarInner}</div>
+      <div class="char-name">${escHtml(c.name)}</div>
+      <div class="char-since">认识于 ${c.since}</div>
+      <div class="char-days">${c.days}</div>
+      <div class="char-days-label">DAYS TOGETHER</div>
+      ${c.note ? `<div class="char-note">${escHtml(c.note)}</div>` : '<div class="char-note"></div>'}
+      <div class="char-actions">
+        <button class="btn-secondary" onclick="openCharModal('${c.id}')">编辑</button>
+        <button class="btn-danger" onclick="deleteChar('${c.id}')">删除</button>
+      </div>
+    </div>`;
+  }).join('');
+
+  grid.innerHTML = cards + `
+  <div class="add-card" onclick="openCharModal()">
+    <span class="add-card-icon">◇</span>
+    <span>新增角色</span>
+  </div>`;
+}
+
+// ── UTILS ──
+function escHtml(str) {
+  if (!str) return '';
+  return String(str).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;').replace(/'/g,'&#39;');
+}
+
+function fmtNum(v) {
+  const n = parseFloat(v);
+  if (isNaN(n)) return '0';
+  return n.toLocaleString('zh-CN');
+}
+
+// ── INIT ──
+const savedFont = localStorage.getItem('airp_font') || 'default';
+document.body.setAttribute('data-font', savedFont);
+document.querySelectorAll('.font-option').forEach(el => {
+  el.classList.toggle('active', el.dataset.font === savedFont);
+});
+document.getElementById('todayDate').textContent = todayStr();
+renderSites();
+renderChars();
+</script>
+</body>
+</html>
