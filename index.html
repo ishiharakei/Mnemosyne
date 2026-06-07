@@ -2,8 +2,15 @@
 <html lang="zh-CN">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>AIRP LEDGER</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<title>Mnemosyne · AIRP LEDGER</title>
+<!-- PWA -->
+<link rel="manifest" href="manifest.json">
+<meta name="theme-color" content="#1a1a1a">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<meta name="apple-mobile-web-app-title" content="Mnemosyne">
 <!-- 默认：Playfair + IBM Plex Mono -->
 <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700;900&family=IBM+Plex+Mono:wght@400;500;600&family=Noto+Serif+SC:wght@400;600;700&display=swap" rel="stylesheet">
 <!-- 霞鹜文楷（清秀宋体系） -->
@@ -1079,7 +1086,7 @@
       <div class="form-row">
         <div class="form-group">
           <label class="form-label">累计充值金额（元）</label>
-          <input class="form-input" type="number" id="f_spent" placeholder="0">
+          <input class="form-input" type="number" id="f_spent" placeholder="0" oninput="recalcRate()">
         </div>
         <div class="form-group">
           <label class="form-label">当前余额（额度）</label>
@@ -1089,27 +1096,27 @@
       <div class="form-row">
         <div class="form-group">
           <label class="form-label">充值额度</label>
-          <input class="form-input" type="number" id="f_credit_top" placeholder="0">
+          <input class="form-input" type="number" id="f_credit_top" placeholder="0" oninput="recalcRate()">
         </div>
         <div class="form-group">
           <label class="form-label">其他额度（奖励/签到等）</label>
-          <input class="form-input" type="number" id="f_credit_other" placeholder="0">
+          <input class="form-input" type="number" id="f_credit_other" placeholder="0" oninput="recalcRate()">
         </div>
       </div>
 
       <hr class="divider">
-      <div class="divider-label">📐 汇率设置</div>
+      <div class="divider-label">📐 汇率（自动计算 · 平均单价）</div>
 
       <div class="form-row">
         <div class="form-group">
           <label class="form-label">1 元 = ? 额度</label>
-          <input class="form-input" type="number" id="f_rate_cny" placeholder="如：10">
-          <div class="form-hint">充值比例</div>
+          <input class="form-input" type="number" id="f_rate_cny" placeholder="—" readonly style="background:var(--paper-dark);cursor:not-allowed">
+          <div class="form-hint">总额度 ÷ 累计充值</div>
         </div>
         <div class="form-group">
           <label class="form-label">1 额度 = ? 元</label>
-          <input class="form-input" type="number" id="f_rate_credit" placeholder="如：0.1" step="0.0001">
-          <div class="form-hint">官方单价</div>
+          <input class="form-input" type="number" id="f_rate_credit" placeholder="—" readonly style="background:var(--paper-dark);cursor:not-allowed">
+          <div class="form-hint">累计充值 ÷ 总额度</div>
         </div>
       </div>
       <div class="form-group">
@@ -1323,10 +1330,29 @@ function openSiteModal(id=null) {
       if (Array.isArray(s.links)) s.links.forEach(l => addLinkRow(l.name, l.url, l.emoji));
     }
   }
+  recalcRate();
   modal.classList.add('open');
 }
 
 function closeSiteModal() { document.getElementById('siteModal').classList.remove('open'); }
+
+// ── 汇率自动计算（平均单价）──
+// 1元=多少额度 = 总额度 ÷ 累计充值；1额度=多少元 = 累计充值 ÷ 总额度
+function recalcRate() {
+  const spent = parseFloat(document.getElementById('f_spent').value) || 0;
+  const top   = parseFloat(document.getElementById('f_credit_top').value) || 0;
+  const other = parseFloat(document.getElementById('f_credit_other').value) || 0;
+  const totalCredit = top + other;
+  const elCny    = document.getElementById('f_rate_cny');
+  const elCredit = document.getElementById('f_rate_credit');
+  if (spent > 0 && totalCredit > 0) {
+    elCny.value    = (totalCredit / spent).toFixed(2);
+    elCredit.value = (spent / totalCredit).toFixed(6);
+  } else {
+    elCny.value = '';
+    elCredit.value = '';
+  }
+}
 
 function saveSite() {
   const name = document.getElementById('f_name').value.trim();
@@ -1402,7 +1428,7 @@ function renderSites() {
       <div class="site-card-header">
         <div class="site-name-row">
           <span class="site-name">${escHtml(s.name)}</span>
-          ${s.website ? `<a class="site-link" href="${escHtml(s.website)}" target="_blank" rel="noopener" title="打开官网">🔗</a>` : ''}
+          ${s.website ? `<a class="site-link" href="${escHtml(s.website)}" target="mnemosyne_ext" rel="noopener" title="打开官网">🔗</a>` : ''}
         </div>
         <div class="site-card-actions">
           ${hasLinks ? `<button class="btn-secondary" onclick="toggleLinks('${s.id}')">🧩 拓展 ▾</button>` : ''}
@@ -1412,7 +1438,7 @@ function renderSites() {
       </div>
       ${hasLinks ? `
       <div class="links-panel" id="links-${s.id}" style="display:none">
-        ${s.links.map(l => `<a class="link-chip" href="${escHtml(l.url)}" target="_blank" rel="noopener">${escHtml(l.emoji || '🔗')} ${escHtml(l.name)}</a>`).join('')}
+        ${s.links.map(l => `<a class="link-chip" href="${escHtml(l.url)}" target="mnemosyne_ext" rel="noopener">${escHtml(l.emoji || '🔗')} ${escHtml(l.name)}</a>`).join('')}
       </div>` : ''}
       <div class="site-card-body">
         <div class="field-group">
