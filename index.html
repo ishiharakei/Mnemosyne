@@ -361,6 +361,60 @@
     gap: 8px;
   }
 
+  /* ── EXTENSION LINKS (拓展网站) ── */
+  .links-panel {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    padding: 12px 18px;
+    border-bottom: 1.5px solid var(--rule);
+    background: var(--accent-light);
+  }
+
+  .link-chip {
+    font-family: var(--f-mono);
+    font-size: 11px;
+    font-weight: 500;
+    letter-spacing: 0.05em;
+    padding: 6px 12px;
+    border: 1.5px solid var(--ink);
+    background: var(--paper);
+    color: var(--ink);
+    text-decoration: none;
+    transition: all 0.1s;
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+  }
+
+  .link-chip:hover {
+    background: var(--ink);
+    color: var(--paper);
+  }
+
+  .link-edit-row {
+    display: grid;
+    grid-template-columns: 52px 1fr 1.4fr auto;
+    gap: 8px;
+    margin-bottom: 8px;
+    align-items: center;
+  }
+
+  .link-edit-row .form-input { margin: 0; }
+
+  .link-del {
+    font-size: 13px;
+    color: var(--red);
+    border: 1.5px solid var(--red);
+    background: transparent;
+    cursor: pointer;
+    padding: 6px 9px;
+    line-height: 1;
+    transition: all 0.1s;
+  }
+
+  .link-del:hover { background: var(--red); color: white; }
+
   .site-card-body {
     padding: 16px 18px;
     display: grid;
@@ -846,6 +900,8 @@
     .stat-val { font-size: 13px; }
     header { padding: 0 12px; }
     main { padding: 20px 12px; }
+    .link-edit-row { grid-template-columns: 44px 1fr auto; }
+    .link-edit-row .link-url { grid-column: 1 / -1; }
   }
 </style>
 </head>
@@ -1010,6 +1066,12 @@
         <label class="form-label">密钥</label>
         <input class="form-input" id="f_key" placeholder="sk-...">
       </div>
+
+      <hr class="divider">
+      <div class="divider-label">🧩 拓展网站（可选）</div>
+      <div id="linksEditor"></div>
+      <button type="button" class="btn-secondary" onclick="addLinkRow()" style="margin-top:4px">＋ 添加拓展</button>
+      <div class="form-hint" style="margin-top:8px">例如：模型监控、空回退款。Emoji 可留空，默认 🔗</div>
 
       <hr class="divider">
       <div class="divider-label">💰 消费记录</div>
@@ -1214,6 +1276,38 @@ function calcUpdate() {
   res.style.display = 'block';
 }
 
+// ── EXTENSION LINKS (拓展网站) ──
+// 在编辑弹窗里添加一行链接输入（emoji + 名称 + 链接）
+function addLinkRow(name='', url='', emoji='') {
+  const editor = document.getElementById('linksEditor');
+  const row = document.createElement('div');
+  row.className = 'link-edit-row';
+  row.innerHTML = `
+    <input class="form-input link-emoji" placeholder="🔗" maxlength="2" value="${escHtml(emoji)}">
+    <input class="form-input link-name" placeholder="名称（如：模型监控）" value="${escHtml(name)}">
+    <input class="form-input link-url" placeholder="https://..." value="${escHtml(url)}">
+    <button type="button" class="link-del" onclick="this.parentElement.remove()" title="删除">✕</button>`;
+  editor.appendChild(row);
+}
+
+// 从编辑弹窗收集所有有效链接（名称和链接都填了才算）
+function collectLinks() {
+  const links = [];
+  document.querySelectorAll('#linksEditor .link-edit-row').forEach(row => {
+    const name = row.querySelector('.link-name').value.trim();
+    const url = row.querySelector('.link-url').value.trim();
+    const emoji = row.querySelector('.link-emoji').value.trim();
+    if (name && url) links.push({ name, url, emoji });
+  });
+  return links;
+}
+
+// 卡片上点击「拓展 ▾」展开/收起链接条
+function toggleLinks(id) {
+  const el = document.getElementById('links-' + id);
+  if (el) el.style.display = (el.style.display === 'none' || !el.style.display) ? 'flex' : 'none';
+}
+
 // ── SITE MODAL ──
 function openSiteModal(id=null) {
   editingSiteId = id;
@@ -1221,9 +1315,13 @@ function openSiteModal(id=null) {
   document.getElementById('siteModalTitle').textContent = id ? '编辑站点' : '新增站点';
   const fields = ['name','website','endpoint','key','spent','balance','credit_top','credit_other','rate_cny','rate_credit','vip'];
   fields.forEach(f => document.getElementById('f_' + f).value = '');
+  document.getElementById('linksEditor').innerHTML = '';
   if (id) {
     const s = sites.find(x => x.id === id);
-    if (s) fields.forEach(f => { if (s[f] !== undefined) document.getElementById('f_' + f).value = s[f]; });
+    if (s) {
+      fields.forEach(f => { if (s[f] !== undefined) document.getElementById('f_' + f).value = s[f]; });
+      if (Array.isArray(s.links)) s.links.forEach(l => addLinkRow(l.name, l.url, l.emoji));
+    }
   }
   modal.classList.add('open');
 }
@@ -1239,6 +1337,7 @@ function saveSite() {
     website: document.getElementById('f_website').value.trim(),
     endpoint: document.getElementById('f_endpoint').value.trim(),
     key: document.getElementById('f_key').value.trim(),
+    links: collectLinks(),
     spent: document.getElementById('f_spent').value,
     balance: document.getElementById('f_balance').value,
     credit_top: document.getElementById('f_credit_top').value,
@@ -1296,19 +1395,25 @@ function renderSites() {
     }
     const keyShown = keyVis[s.id];
     const keyDisplay = s.key ? (keyShown ? s.key : s.key.slice(0,6) + '••••••••' + s.key.slice(-4)) : '—';
+    const hasLinks = Array.isArray(s.links) && s.links.length > 0;
 
     return `
     <div class="site-card">
       <div class="site-card-header">
         <div class="site-name-row">
           <span class="site-name">${escHtml(s.name)}</span>
-          ${s.website ? `<a class="site-link" href="${escHtml(s.website)}" target="_blank" title="打开官网">🔗</a>` : ''}
+          ${s.website ? `<a class="site-link" href="${escHtml(s.website)}" target="_blank" rel="noopener" title="打开官网">🔗</a>` : ''}
         </div>
         <div class="site-card-actions">
+          ${hasLinks ? `<button class="btn-secondary" onclick="toggleLinks('${s.id}')">🧩 拓展 ▾</button>` : ''}
           <button class="btn-secondary" onclick="openSiteModal('${s.id}')">编辑</button>
           <button class="btn-danger" onclick="deleteSite('${s.id}')">删除</button>
         </div>
       </div>
+      ${hasLinks ? `
+      <div class="links-panel" id="links-${s.id}" style="display:none">
+        ${s.links.map(l => `<a class="link-chip" href="${escHtml(l.url)}" target="_blank" rel="noopener">${escHtml(l.emoji || '🔗')} ${escHtml(l.name)}</a>`).join('')}
+      </div>` : ''}
       <div class="site-card-body">
         <div class="field-group">
           <div class="field-row">
