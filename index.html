@@ -1639,6 +1639,13 @@ document.querySelectorAll('.font-option').forEach(el => {
 document.getElementById('todayDate').textContent = todayStr();
 renderSites();
 renderChars();
+
+// 注册 Service Worker（PWA 可安装的关键之一）
+if ('serviceWorker' in navigator) {
+  window.addEventListener('load', () => {
+    navigator.serviceWorker.register('sw.js').catch(err => console.log('SW 注册失败', err));
+  });
+}
 </script>
 </body>
 </html>
