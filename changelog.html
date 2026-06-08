@@ -1,0 +1,287 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<title>版本手记 · Mnemosyne</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700;900&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<link href="https://cdn.jsdelivr.net/npm/cn-fontsource-hui-wen-ming-chao-ti-regular/font.css" rel="stylesheet">
+<style>
+  :root {
+    --ink: #1a1a1a;
+    --paper: #f3efe6;
+    --paper-2: #ece6d8;
+    --rule: #c4bba8;
+    --rule-strong: #8a8070;
+    --muted: #6f6655;
+    --red: #9c3320;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body {
+    background: var(--paper);
+    color: var(--ink);
+    font-family: 'HuiWenMingChaoTi', serif;
+    line-height: 1.7;
+    min-height: 100vh;
+    padding: 0 0 60px;
+    background-image:
+      repeating-linear-gradient(0deg, transparent, transparent 31px, rgba(0,0,0,0.035) 31px, rgba(0,0,0,0.035) 32px),
+      url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='80' height='80'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2'/%3E%3C/filter%3E%3Crect width='80' height='80' filter='url(%23n)' opacity='0.025'/%3E%3C/svg%3E");
+  }
+  .mono { font-family: 'IBM Plex Mono', monospace; }
+
+  /* ── 报头 ── */
+  .masthead {
+    max-width: 820px;
+    margin: 0 auto;
+    padding: 32px 24px 18px;
+    border-bottom: 4px double var(--ink);
+    text-align: center;
+  }
+  .mast-kicker {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 11px;
+    letter-spacing: 0.45em;
+    text-transform: uppercase;
+    color: var(--muted);
+    margin-bottom: 8px;
+    padding-left: 0.45em;
+  }
+  .mast-title {
+    font-family: 'Playfair Display', serif;
+    font-size: clamp(38px, 9vw, 72px);
+    font-weight: 900;
+    line-height: 0.95;
+    letter-spacing: 0.02em;
+  }
+  .mast-cn {
+    font-size: 18px;
+    letter-spacing: 0.4em;
+    margin-top: 6px;
+    padding-left: 0.4em;
+    color: #2a2a2a;
+  }
+  .mast-meta {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    max-width: 820px;
+    margin: 0 auto;
+    padding: 8px 24px;
+    border-bottom: 1.5px solid var(--ink);
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 10px;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--muted);
+  }
+  .back-link {
+    color: var(--ink);
+    text-decoration: none;
+    border: 1.5px solid var(--ink);
+    padding: 4px 10px;
+    transition: all 0.15s;
+  }
+  .back-link:hover { background: var(--ink); color: var(--paper); }
+
+  /* ── 正文 ── */
+  .sheet {
+    max-width: 820px;
+    margin: 0 auto;
+    padding: 8px 24px;
+  }
+  .lead {
+    font-size: 15px;
+    text-align: center;
+    color: var(--muted);
+    font-style: italic;
+    padding: 22px 0 4px;
+    letter-spacing: 0.05em;
+  }
+
+  .entry {
+    padding: 26px 0 22px;
+    border-bottom: 1px solid var(--rule);
+  }
+  .entry:last-child { border-bottom: none; }
+
+  .entry-head {
+    display: flex;
+    align-items: baseline;
+    gap: 14px;
+    flex-wrap: wrap;
+    margin-bottom: 14px;
+  }
+  .ver-badge {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 13px;
+    font-weight: 600;
+    letter-spacing: 0.05em;
+    border: 2px solid var(--ink);
+    padding: 3px 10px;
+    background: var(--paper-2);
+  }
+  .entry-title {
+    font-size: 21px;
+    font-weight: 700;
+    letter-spacing: 0.04em;
+    flex: 1;
+    min-width: 200px;
+  }
+  .entry-date {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 11px;
+    color: var(--muted);
+    letter-spacing: 0.1em;
+  }
+
+  .changes { list-style: none; padding-left: 2px; }
+  .changes li {
+    position: relative;
+    padding-left: 26px;
+    margin-bottom: 9px;
+    font-size: 14.5px;
+    letter-spacing: 0.02em;
+  }
+  .changes li .tag {
+    position: absolute;
+    left: 0;
+    top: 0.05em;
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 12px;
+    color: var(--muted);
+    font-weight: 600;
+  }
+  .changes li b { font-weight: 700; }
+
+  /* 不同类型的引导符号（素雅） */
+  .t-new .tag::before  { content: '◇'; }   /* 新增 */
+  .t-fix .tag::before  { content: '▍'; color: var(--red); } /* 修复 */
+  .t-imp .tag::before  { content: '・'; }   /* 优化 */
+  .t-mile .tag::before { content: '◆'; }   /* 里程碑 */
+
+  .legend {
+    max-width: 820px;
+    margin: 30px auto 0;
+    padding: 14px 24px;
+    border-top: 1.5px solid var(--ink);
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 11px;
+    color: var(--muted);
+    letter-spacing: 0.08em;
+    text-align: center;
+  }
+  .colophon {
+    text-align: center;
+    font-size: 12px;
+    color: var(--muted);
+    margin-top: 16px;
+    font-style: italic;
+    letter-spacing: 0.06em;
+  }
+</style>
+</head>
+<body>
+
+  <div class="masthead">
+    <div class="mast-kicker">Version Chronicle · 版本手记</div>
+    <div class="mast-title">MNEMOSYNE</div>
+    <div class="mast-cn">忆 之 卷 宗</div>
+  </div>
+  <div class="mast-meta">
+    <span>AIRP LEDGER · 更新纪事</span>
+    <a class="back-link" href="index.html">← 返回</a>
+  </div>
+
+  <div class="sheet">
+    <div class="lead">「 记忆，是万物的守藏者。 」</div>
+
+    <!-- ════ 在此处往下、紧贴本行新增最新版本 ════ -->
+
+    <div class="entry">
+      <div class="entry-head">
+        <span class="ver-badge mono">v1.4.2</span>
+        <span class="entry-title">更名 · 版本手记</span>
+        <span class="entry-date">2026 · 06 · 08</span>
+      </div>
+      <ul class="changes">
+        <li class="t-mile"><span class="tag"></span><b>更名</b>　项目正名为 Mnemosyne，首页徽标焕新。</li>
+        <li class="t-new"><span class="tag"></span><b>新增</b>　独立「版本手记」页（即此页），复古报纸体例。</li>
+        <li class="t-new"><span class="tag"></span><b>新增</b>　主菜单增设「更新日志」入口，一键直达。</li>
+      </ul>
+    </div>
+
+    <div class="entry">
+      <div class="entry-head">
+        <span class="ver-badge mono">v1.4.0</span>
+        <span class="entry-title">结算重构 · 日记本</span>
+        <span class="entry-date">2026 · 06 · 08</span>
+      </div>
+      <ul class="changes">
+        <li class="t-fix"><span class="tag"></span><b>修复</b>　结算「先斩后奏」导致填错即污染余额之弊，改为「预览 → 确认入账」两步，未确认则分毫不动。</li>
+        <li class="t-new"><span class="tag"></span><b>新增</b>　日记本，每次入账自动留票，可循日期回看旧票。</li>
+        <li class="t-new"><span class="tag"></span><b>新增</b>　历史小票可撤销，余额自动回退。</li>
+        <li class="t-new"><span class="tag"></span><b>新增</b>　同日可反复补填结算，以新覆旧。</li>
+        <li class="t-new"><span class="tag"></span><b>新增</b>　小票「今日札记」，所书之言印于票上并存档。</li>
+        <li class="t-imp"><span class="tag"></span><b>优化</b>　右上诸键收于一菜单（☰），手机不再局促。</li>
+      </ul>
+    </div>
+
+    <div class="entry">
+      <div class="entry-head">
+        <span class="ver-badge mono">v1.3.0</span>
+        <span class="entry-title">结算系统 · 充值流水 · 分组</span>
+        <span class="entry-date">2026 · 06 · 08</span>
+      </div>
+      <ul class="changes">
+        <li class="t-new"><span class="tag"></span><b>新增</b>　今日结算、出小票、结算时间线。</li>
+        <li class="t-new"><span class="tag"></span><b>新增</b>　充值流水（可增删），累计充值与额度自动汇总。</li>
+        <li class="t-new"><span class="tag"></span><b>新增</b>　单站每日用量折叠区。</li>
+        <li class="t-new"><span class="tag"></span><b>新增</b>　自定义分组，按组折叠与筛选。</li>
+        <li class="t-imp"><span class="tag"></span><b>优化</b>　余额折 RMB 改为「余额 × 平均单价」，VIP 折扣仅消耗时计。</li>
+      </ul>
+    </div>
+
+    <div class="entry">
+      <div class="entry-head">
+        <span class="ver-badge mono">v1.2.0</span>
+        <span class="entry-title">可安装 · PWA</span>
+        <span class="entry-date">2026 · 06 · 08</span>
+      </div>
+      <ul class="changes">
+        <li class="t-new"><span class="tag"></span><b>新增</b>　manifest、sw、图标，应用可装入手机桌面，全屏无地址栏。</li>
+      </ul>
+    </div>
+
+    <div class="entry">
+      <div class="entry-head">
+        <span class="ver-badge mono">v1.1.0</span>
+        <span class="entry-title">汇率自动 · 标签页复用</span>
+        <span class="entry-date">2026 · 06 · 08</span>
+      </div>
+      <ul class="changes">
+        <li class="t-imp"><span class="tag"></span><b>优化</b>　汇率由充值与额度自动推算（平均单价），不再手填。</li>
+        <li class="t-imp"><span class="tag"></span><b>优化</b>　站点链接复用同一标签页，不再每次新开。</li>
+      </ul>
+    </div>
+
+    <div class="entry">
+      <div class="entry-head">
+        <span class="ver-badge mono">v1.0.0</span>
+        <span class="entry-title">初创</span>
+        <span class="entry-date">创世</span>
+      </div>
+      <ul class="changes">
+        <li class="t-mile"><span class="tag"></span><b>初始</b>　API 站点管理、角色纪念日、字体主题、额度换算器、拓展网站、密钥显隐与复制。</li>
+      </ul>
+    </div>
+
+  </div>
+
+  <div class="legend">
+    ◆ 里程碑　　◇ 新增　　・ 优化　　▍ 修复
+  </div>
+  <div class="colophon">— Mnemosyne, 记忆女神 · 缪斯之母 —</div>
+
+</body>
+</html>

@@ -72,11 +72,11 @@
   .font-popup {
     position: fixed;
     top: 72px;
-    right: 72px;
+    right: 16px;
     width: 220px;
     background: var(--paper);
     border: 2.5px solid var(--ink);
-    z-index: 150;
+    z-index: 160;
     display: none;
     box-shadow: 6px 6px 0 var(--ink);
   }
@@ -164,6 +164,7 @@
     border-right: 2px solid var(--ink);
     padding-right: 24px;
     margin-right: 24px;
+    flex-shrink: 0;
   }
 
   .logo {
@@ -225,6 +226,7 @@
     gap: 12px;
     padding-left: 16px;
     border-left: 2px solid var(--ink);
+    flex-shrink: 0;
   }
 
   .calc-btn {
@@ -245,6 +247,34 @@
     background: var(--ink);
     color: var(--paper);
   }
+
+  /* ── 主菜单 ── */
+  .menu-popup {
+    position: fixed;
+    top: 64px;
+    right: 12px;
+    width: 200px;
+    background: var(--paper);
+    border: 2.5px solid var(--ink);
+    z-index: 170;
+    display: none;
+    box-shadow: 6px 6px 0 var(--ink);
+  }
+  .menu-popup.open { display: block; }
+  .menu-item {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 13px 16px;
+    cursor: pointer;
+    border-bottom: 1px solid var(--rule);
+    font-size: 13px;
+    font-weight: 600;
+    transition: background 0.1s;
+  }
+  .menu-item:last-child { border-bottom: none; }
+  .menu-item:hover { background: var(--accent-light); }
+  .menu-item .mi-icon { font-size: 17px; width: 22px; text-align: center; }
 
   /* ── MAIN ── */
   main {
@@ -368,7 +398,7 @@
     gap: 8px;
   }
 
-  /* ── EXTENSION LINKS (拓展网站) ── */
+  /* ── EXTENSION LINKS ── */
   .links-panel {
     display: flex;
     flex-wrap: wrap;
@@ -812,11 +842,11 @@
   .calc-popup {
     position: fixed;
     top: 72px;
-    right: 24px;
+    right: 16px;
     width: 300px;
     background: var(--paper);
     border: 2.5px solid var(--ink);
-    z-index: 150;
+    z-index: 160;
     display: none;
     box-shadow: 6px 6px 0 var(--ink);
   }
@@ -977,19 +1007,9 @@
   }
 
   /* ── 结算面板 ── */
-  .settle-row {
-    display: grid;
-    grid-template-columns: 1.3fr 1fr 1fr;
-    gap: 10px;
-    align-items: center;
-    padding: 10px 0;
-    border-bottom: 1px dotted var(--rule);
-  }
-  .settle-row .sr-name { font-weight: 600; font-size: 13px; }
-  .settle-row .sr-last { font-family: var(--f-mono); font-size: 11px; color: var(--muted); }
   .settle-head {
     display: grid;
-    grid-template-columns: 1.3fr 1fr 1fr;
+    grid-template-columns: 1.3fr 0.8fr 1fr;
     gap: 10px;
     font-size: 9px;
     letter-spacing: 0.12em;
@@ -997,6 +1017,22 @@
     color: var(--muted);
     padding-bottom: 6px;
     border-bottom: 1.5px solid var(--ink);
+  }
+  .settle-row {
+    display: grid;
+    grid-template-columns: 1.3fr 0.8fr 1fr;
+    gap: 10px;
+    align-items: center;
+    padding: 10px 0;
+    border-bottom: 1px dotted var(--rule);
+  }
+  .settle-row .sr-name { font-weight: 600; font-size: 13px; display:flex; align-items:center; gap:6px; }
+  .settle-row .sr-last { font-family: var(--f-mono); font-size: 11px; color: var(--muted); }
+  .settle-row .sr-jump { font-size: 13px; text-decoration:none; }
+
+  .settle-date-bar {
+    display: flex; align-items: center; gap: 10px;
+    margin-bottom: 14px;
   }
 
   /* ── 小票 ── */
@@ -1010,13 +1046,6 @@
     max-width: 360px;
     margin: 0 auto;
     position: relative;
-  }
-  .receipt::after {
-    content: '';
-    position: absolute;
-    left: 0; right: 0; bottom: -8px;
-    height: 8px;
-    background: repeating-linear-gradient(135deg, #fdfcf9 0 8px, transparent 8px 16px);
   }
   .rcpt-title {
     font-family: var(--f-display);
@@ -1034,6 +1063,7 @@
   .rcpt-line .rl-amt { width: 64px; text-align: right; color: var(--red); }
   .rcpt-line .rl-rmb { width: 64px; text-align: right; }
   .rcpt-total { display: flex; justify-content: space-between; font-size: 13px; font-weight: 700; padding: 3px 0; }
+  .rcpt-note { font-size: 11px; color:#555; margin-top:10px; line-height:1.6; font-style:italic; border-top:1px dotted #bbb; padding-top:8px; word-break:break-word; }
   .rcpt-foot { text-align: center; font-size: 10px; color: #888; margin-top: 14px; font-style: italic; line-height: 1.6; }
   .rcpt-barcode {
     margin-top: 12px;
@@ -1041,27 +1071,17 @@
     background: repeating-linear-gradient(90deg, #2a2a2a 0 2px, transparent 2px 4px, #2a2a2a 4px 5px, transparent 5px 9px);
   }
 
-  .timeline { position: relative; padding-left: 24px; margin-top: 8px; }
-  .timeline::before {
-    content: '';
-    position: absolute;
-    left: 6px; top: 4px; bottom: 4px;
-    width: 2px;
-    background: var(--rule-strong);
+  /* ── 日记本 ── */
+  .diary-toolbar { display:flex; align-items:center; gap:10px; margin-bottom:16px; flex-wrap:wrap; }
+  .diary-list-item {
+    display:flex; align-items:center; justify-content:space-between;
+    padding:12px 14px; border:1.5px solid var(--ink); background:var(--card-bg);
+    margin-bottom:10px; cursor:pointer; transition:all 0.1s;
   }
-  .tl-node { position: relative; margin-bottom: 18px; cursor: pointer; }
-  .tl-node::before {
-    content: '';
-    position: absolute;
-    left: -22px; top: 3px;
-    width: 11px; height: 11px;
-    border-radius: 50%;
-    background: var(--paper);
-    border: 2.5px solid var(--ink);
-  }
-  .tl-node:hover::before { background: var(--ink); }
-  .tl-date { font-family: var(--f-mono); font-size: 12px; font-weight: 600; }
-  .tl-info { font-family: var(--f-mono); font-size: 11px; color: var(--muted); margin-top: 2px; }
+  .diary-list-item:hover { transform:translate(-2px,-2px); box-shadow:3px 3px 0 var(--ink); }
+  .dli-date { font-family:var(--f-mono); font-size:13px; font-weight:600; }
+  .dli-info { font-family:var(--f-mono); font-size:11px; color:var(--muted); margin-top:3px; }
+  .dli-amt { font-family:var(--f-mono); font-size:14px; font-weight:700; color:var(--red); }
 
   /* mobile tweak */
   @media (max-width: 600px) {
@@ -1074,8 +1094,7 @@
     .link-edit-row { grid-template-columns: 44px 1fr auto; }
     .link-edit-row .link-url { grid-column: 1 / -1; }
     .topup-row { grid-template-columns: 1fr 1fr auto; }
-    .header-right { gap: 6px; padding-left: 8px; }
-    .calc-btn { width: 34px; height: 34px; font-size: 16px; }
+    .nav-tab { padding: 0 12px; font-size: 10px; }
   }
 </style>
 </head>
@@ -1084,20 +1103,27 @@
 <!-- HEADER -->
 <header>
   <div class="logo-block">
-    <div class="logo">AIRP</div>
-    <div class="logo-sub">Ledger · v1.0</div>
+    <div class="logo">MNEMOSYNE</div>
+    <div class="logo-sub">AIRP Ledger · v1.4.2</div>
   </div>
   <nav class="nav-tabs">
     <button class="nav-tab active" onclick="switchTab('api')">◈ API 站点</button>
     <button class="nav-tab" onclick="switchTab('char')">◇ 角色纪念日</button>
   </nav>
   <div class="header-right">
-    <button class="calc-btn" onclick="openSettle()" title="今日结算">🧾</button>
-    <button class="calc-btn" onclick="toggleTimeline()" title="结算时间线">📊</button>
-    <button class="calc-btn" onclick="toggleFontPicker()" title="字体主题" id="fontBtn">Aa</button>
-    <button class="calc-btn" onclick="toggleCalc()" title="额度换算器">🧮</button>
+    <button class="calc-btn" onclick="toggleMenu()" title="菜单" id="menuBtn">☰</button>
   </div>
 </header>
+
+<!-- 主菜单 -->
+<div class="menu-popup" id="menuPopup">
+  <div class="menu-item" onclick="openSettle()"><span class="mi-icon">🧾</span><span>今日结算</span></div>
+  <div class="menu-item" onclick="openDiary()"><span class="mi-icon">📖</span><span>日记本</span></div>
+  <div class="menu-item" onclick="openFontFromMenu()"><span class="mi-icon">Aa</span><span>字体主题</span></div>
+  <div class="menu-item" onclick="openCalcFromMenu()"><span class="mi-icon">🧮</span><span>额度换算器</span></div>
+          <a class="menu-item" href="changelog.html" style="text-decoration:none;color:inherit"><span class="mi-icon">📜</span><span>更新日志</span></a>
+
+</div>
 
 <!-- FONT PICKER POPUP -->
 <div class="font-popup" id="fontPopup">
@@ -1328,44 +1354,53 @@
       <button class="modal-close" onclick="closeSettle()">×</button>
     </div>
     <div class="modal-body">
-      <div class="form-hint" style="margin-bottom:14px">填入各站点「现在的余额」，没用过的站留空即可跳过。系统会算出这一期的消耗并出小票。</div>
+      <div class="settle-date-bar">
+        <label class="form-label" style="margin:0">结算日期：</label>
+        <input class="form-input" type="date" id="settleDate" style="width:auto" onchange="onSettleDateChange()">
+      </div>
+      <div class="form-hint" style="margin-bottom:14px">填入各站点「现在的余额」，没用过的站留空跳过。点站名旁 🔗 可跳去查余额。先「预览小票」，确认无误再入账，不会污染数据。</div>
       <div class="settle-head">
         <span>站点</span><span>上次余额</span><span>现在余额</span>
       </div>
       <div id="settleRows"></div>
+      <div class="form-group" style="margin-top:16px">
+        <label class="form-label">📝 今日札记（可选 · 会印在小票上）</label>
+        <textarea class="form-input" id="settleNote" rows="3" placeholder="今天做了什么项目、聊了什么剧情、写了什么代码..."></textarea>
+      </div>
     </div>
     <div class="modal-footer">
       <button class="btn-secondary" onclick="closeSettle()">取消</button>
-      <button class="btn-primary" onclick="doSettle()">结算并出票</button>
+      <button class="btn-primary" onclick="previewSettle()">预览小票 →</button>
     </div>
   </div>
 </div>
 
-<!-- 小票 MODAL -->
+<!-- 小票 MODAL（预览/查看共用）-->
 <div class="modal-overlay" id="receiptModal">
   <div class="modal" style="max-width:420px;background:var(--paper-dark)">
     <div class="modal-header">
-      <span class="modal-title">结算小票</span>
+      <span class="modal-title" id="receiptModalTitle">小票预览</span>
       <button class="modal-close" onclick="closeReceipt()">×</button>
     </div>
     <div class="modal-body">
       <div id="receiptArea"></div>
     </div>
-    <div class="modal-footer">
-      <button class="btn-secondary" onclick="closeReceipt()">关闭</button>
-    </div>
+    <div class="modal-footer" id="receiptFooter"></div>
   </div>
 </div>
 
-<!-- 时间线 MODAL -->
-<div class="modal-overlay" id="timelineModal">
+<!-- 日记本 MODAL -->
+<div class="modal-overlay" id="diaryModal">
   <div class="modal">
     <div class="modal-header">
-      <span class="modal-title">📊 结算时间线</span>
-      <button class="modal-close" onclick="toggleTimeline()">×</button>
+      <span class="modal-title">📖 日记本</span>
+      <button class="modal-close" onclick="closeDiary()">×</button>
     </div>
     <div class="modal-body">
-      <div id="timelineArea"></div>
+      <div class="diary-toolbar">
+        <span class="form-label" style="margin:0">共 <span id="diaryCount">0</span> 天记录</span>
+      </div>
+      <div id="diaryList"></div>
     </div>
   </div>
 </div>
@@ -1419,11 +1454,18 @@
 <div class="toast" id="toast"></div>
 
 <script>
-// ── FONT SWITCHER ──
+// ── 菜单 ──
 function closeAllPopups() {
-  document.getElementById('fontPopup').classList.remove('open');
-  document.getElementById('calcPopup').classList.remove('open');
+  ['fontPopup','calcPopup','menuPopup'].forEach(id => document.getElementById(id).classList.remove('open'));
 }
+function toggleMenu() {
+  const open = document.getElementById('menuPopup').classList.contains('open');
+  closeAllPopups();
+  if (!open) document.getElementById('menuPopup').classList.add('open');
+}
+function openFontFromMenu() { closeAllPopups(); document.getElementById('fontPopup').classList.add('open'); }
+function openCalcFromMenu() { closeAllPopups(); document.getElementById('calcPopup').classList.add('open'); populateCalcSites(); }
+
 function toggleFontPicker() {
   const open = document.getElementById('fontPopup').classList.contains('open');
   closeAllPopups();
@@ -1441,18 +1483,27 @@ function setFont(key) {
 // ── DATA ──
 let sites = JSON.parse(localStorage.getItem('airp_sites') || '[]');
 let chars = JSON.parse(localStorage.getItem('airp_chars') || '[]');
+let diary = JSON.parse(localStorage.getItem('airp_diary') || '[]'); // 日记本：每天一条 entry
 let editingSiteId = null;
 let editingCharId = null;
 let avatarData = null;
-let editingTopups = [];   // 当前编辑站点的充值流水临时副本
+let editingTopups = [];
+let pendingSettle = null; // 待确认的结算预览结果
 
-// 数据迁移：补齐新字段，保证旧数据兼容
+function uid() { return Date.now().toString(36) + Math.random().toString(36).slice(2); }
+
+function todayISO() {
+  const d = new Date();
+  return `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`;
+}
+
+// 数据迁移：补齐新字段
 sites.forEach(s => {
   if (!Array.isArray(s.links)) s.links = [];
   if (!Array.isArray(s.topups)) s.topups = [];
   if (!Array.isArray(s.history)) s.history = [];
   if (s.group === undefined) s.group = '';
-  // 旧数据若有手填的 spent/credit_top，转成一笔初始流水，避免归零
+  if (s.checkinUrl === undefined) s.checkinUrl = '';
   if (s.topups.length === 0) {
     const oldRmb = parseFloat(s.spent) || 0;
     const oldCredit = parseFloat(s.credit_top) || 0;
@@ -1465,9 +1516,8 @@ sites.forEach(s => {
 function save() {
   localStorage.setItem('airp_sites', JSON.stringify(sites));
   localStorage.setItem('airp_chars', JSON.stringify(chars));
+  localStorage.setItem('airp_diary', JSON.stringify(diary));
 }
-
-function uid() { return Date.now().toString(36) + Math.random().toString(36).slice(2); }
 
 // ── TOAST ──
 function toast(msg, dur=2000) {
@@ -1489,10 +1539,6 @@ function switchTab(tab) {
 function todayStr() {
   return new Date().toLocaleDateString('zh-CN', { year:'numeric', month:'long', day:'numeric', weekday:'long' });
 }
-function todayISO() {
-  const d = new Date();
-  return `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`;
-}
 function fmtDateShort(iso) {
   if (!iso) return '—';
   const p = iso.split('-');
@@ -1503,7 +1549,6 @@ function daysBetweenISO(a, b) {
   d1.setHours(0,0,0,0); d2.setHours(0,0,0,0);
   return Math.round((d2 - d1) / 86400000);
 }
-
 function daysBetween(dateStr) {
   const d = new Date(dateStr);
   const now = new Date();
@@ -1517,7 +1562,6 @@ function sumTopups(topups) {
   (topups || []).forEach(t => { rmb += parseFloat(t.rmb)||0; credits += parseFloat(t.credits)||0; });
   return { rmb, credits };
 }
-// 平均单价：累计充值 ÷ 总额度（总额度 = 充值额度 + 其他额度）
 function avgPrice(s) {
   const { rmb } = sumTopups(s.topups);
   const totalCredit = (parseFloat(s.credit_top)||0) + (parseFloat(s.credit_other)||0);
@@ -1540,12 +1584,8 @@ async function copyText(text, btnEl) {
 function toggleCalc() {
   const open = document.getElementById('calcPopup').classList.contains('open');
   closeAllPopups();
-  if (!open) {
-    document.getElementById('calcPopup').classList.add('open');
-    populateCalcSites();
-  }
+  if (!open) { document.getElementById('calcPopup').classList.add('open'); populateCalcSites(); }
 }
-
 function populateCalcSites() {
   const sel = document.getElementById('calcSite');
   sel.innerHTML = '<option value="">— 请选择 —</option>';
@@ -1555,7 +1595,6 @@ function populateCalcSites() {
     sel.appendChild(o);
   });
 }
-
 function calcUpdate() {
   const sid = document.getElementById('calcSite').value;
   const amt = parseFloat(document.getElementById('calcAmount').value);
@@ -1586,7 +1625,6 @@ function addLinkRow(name='', url='', emoji='') {
     <button type="button" class="link-del" onclick="this.parentElement.remove()" title="删除">✕</button>`;
   editor.appendChild(row);
 }
-
 function collectLinks() {
   const links = [];
   document.querySelectorAll('#linksEditor .link-edit-row').forEach(row => {
@@ -1597,20 +1635,17 @@ function collectLinks() {
   });
   return links;
 }
-
 function toggleLinks(id) {
   const el = document.getElementById('links-' + id);
   if (el) el.style.display = (el.style.display === 'none' || !el.style.display) ? 'flex' : 'none';
 }
 
-// ── 单站每日用量折叠 ──
+// ── 单站每日用量 ──
 function toggleUsage(id) {
   const el = document.getElementById('usage-' + id);
   if (el) el.classList.toggle('open');
 }
 function toggleUsageAll(id, btn) {
-  const s = sites.find(x => x.id === id);
-  if (!s) return;
   const full = btn.dataset.full === '1';
   btn.dataset.full = full ? '0' : '1';
   renderUsageLines(id, !full);
@@ -1657,10 +1692,8 @@ function openSiteModal(id=null) {
   recalcRate();
   modal.classList.add('open');
 }
-
 function closeSiteModal() { document.getElementById('siteModal').classList.remove('open'); }
 
-// 充值流水：添加/删除/渲染
 function addTopup() {
   const rmb = parseFloat(document.getElementById('tu_rmb').value) || 0;
   const credits = parseFloat(document.getElementById('tu_credits').value) || 0;
@@ -1691,7 +1724,6 @@ function renderTopupList() {
   }
 }
 
-// ── 汇率自动计算（平均单价）──
 function recalcRate() {
   const { rmb, credits } = sumTopups(editingTopups);
   const other = parseFloat(document.getElementById('f_credit_other').value) || 0;
@@ -1752,7 +1784,7 @@ function deleteSite(id) {
   toast('已删除');
 }
 
-// 分组下拉/datalist
+// 分组
 function allGroups() {
   const set = new Set();
   sites.forEach(s => { if (s.group && s.group.trim()) set.add(s.group.trim()); });
@@ -1773,10 +1805,7 @@ function refreshGroupFilter() {
 
 // ── KEY VISIBILITY ──
 const keyVis = {};
-function toggleKey(id) {
-  keyVis[id] = !keyVis[id];
-  renderSites();
-}
+function toggleKey(id) { keyVis[id] = !keyVis[id]; renderSites(); }
 
 // ── RENDER SITES ──
 function renderSites() {
@@ -1796,8 +1825,6 @@ function renderSites() {
     el.innerHTML = `<div class="empty-state"><div class="empty-icon">◈</div><div class="empty-text">暂无站点 · 点击右上角新增</div></div>`;
     return;
   }
-
-  // 按分组归类显示
   let html = '';
   if (gf === '__all') {
     const groups = {};
@@ -1811,8 +1838,6 @@ function renderSites() {
     html = list.map(renderSiteCard).join('');
   }
   el.innerHTML = html;
-
-  // 渲染各站用量明细
   list.forEach(s => renderUsageLines(s.id, false));
 }
 
@@ -1912,48 +1937,69 @@ function renderSiteCard(s) {
   </div>`;
 }
 
-// ── 结算 ──
-function openSettle() {
-  closeAllPopups();
-  const box = document.getElementById('settleRows');
-  if (!sites.length) { box.innerHTML = `<div class="form-hint">还没有站点</div>`; }
-  else {
-    box.innerHTML = sites.map(s => {
-      const last = lastBalance(s);
-      return `
-      <div class="settle-row">
-        <span class="sr-name">${escHtml(s.name)}</span>
-        <span class="sr-last">${last === null ? '—' : fmtNum(last)}</span>
-        <input class="form-input settle-input" data-id="${s.id}" type="number" placeholder="留空跳过" style="margin:0">
-      </div>`;
-    }).join('');
+// ════════ 结算（两步：预览 → 确认）════════
+function lastBalanceBefore(s, dateExclusive) {
+  // 取该站在 dateExclusive 之前（不含）最后一笔历史余额
+  let result = null;
+  (s.history||[]).forEach(h => {
+    if (h.date < dateExclusive) result = parseFloat(h.balance);
+  });
+  if (result === null) {
+    // 没有更早的历史，用当前 balance 作为基准（首次结算）
+    if (s.balance !== '' && s.balance !== undefined && s.balance !== null) return { val: parseFloat(s.balance)||0, date: null };
+    return { val: null, date: null };
   }
-  document.getElementById('settleModal').classList.add('open');
+  // 找到对应日期
+  let date = null;
+  (s.history||[]).forEach(h => { if (h.date < dateExclusive) date = h.date; });
+  return { val: result, date };
 }
-function closeSettle() { document.getElementById('settleModal').classList.remove('open'); }
-
-// 上次结算/迁移得到的余额基准：优先历史最后一笔，其次当前 balance
-function lastBalance(s) {
-  if (Array.isArray(s.history) && s.history.length) {
-    return parseFloat(s.history[s.history.length-1].balance);
-  }
-  if (s.balance !== '' && s.balance !== undefined && s.balance !== null) return parseFloat(s.balance)||0;
-  return null;
-}
-function lastSettleDate(s) {
-  if (Array.isArray(s.history) && s.history.length) return s.history[s.history.length-1].date;
-  return null;
-}
-// 某日期之后的充值额度总和（用于消耗公式里加回充值）
-function topupCreditsAfter(s, sinceDateExclusive) {
-  if (!sinceDateExclusive) return 0;
+function topupCreditsBetween(s, afterDateExclusive, untilDateInclusive) {
   let sum = 0;
-  (s.topups||[]).forEach(t => { if (t.date > sinceDateExclusive) sum += parseFloat(t.credits)||0; });
+  (s.topups||[]).forEach(t => {
+    if (!t.date) return;
+    if (t.date <= untilDateInclusive && (!afterDateExclusive || t.date > afterDateExclusive)) {
+      sum += parseFloat(t.credits)||0;
+    }
+  });
   return sum;
 }
 
-function doSettle() {
-  const today = todayISO();
+function openSettle() {
+  closeAllPopups();
+  document.getElementById('settleDate').value = todayISO();
+  document.getElementById('settleNote').value = '';
+  renderSettleRows();
+  document.getElementById('settleModal').classList.add('open');
+}
+function onSettleDateChange() { renderSettleRows(); }
+function renderSettleRows() {
+  const date = document.getElementById('settleDate').value || todayISO();
+  // 若该日期已有日记，预填札记和已填余额
+  const existing = diary.find(d => d.date === date);
+  if (existing) document.getElementById('settleNote').value = existing.note || '';
+  const box = document.getElementById('settleRows');
+  if (!sites.length) { box.innerHTML = `<div class="form-hint">还没有站点</div>`; return; }
+  box.innerHTML = sites.map(s => {
+    const base = lastBalanceBefore(s, date);
+    const prevTxt = base.val === null ? '—' : fmtNum(base.val);
+    const exItem = existing ? (existing.items||[]).find(it => it.siteId === s.id) : null;
+    const preFill = exItem ? exItem.newBal : '';
+    const jump = s.website ? `<a class="sr-jump" href="${escHtml(s.website)}" target="mnemosyne_ext" title="去查余额">🔗</a>` : '';
+    return `
+    <div class="settle-row">
+      <span class="sr-name">${escHtml(s.name)} ${jump}</span>
+      <span class="sr-last">${prevTxt}</span>
+      <input class="form-input settle-input" data-id="${s.id}" type="number" value="${preFill}" placeholder="留空跳过" style="margin:0">
+    </div>`;
+  }).join('');
+}
+function closeSettle() { document.getElementById('settleModal').classList.remove('open'); }
+
+// 第一步：预览（只计算，不写数据）
+function previewSettle() {
+  const date = document.getElementById('settleDate').value || todayISO();
+  const note = document.getElementById('settleNote').value.trim();
   const inputs = document.querySelectorAll('.settle-input');
   const items = [];
   let totalConsumed = 0, totalRmb = 0;
@@ -1964,30 +2010,48 @@ function doSettle() {
     if (isNaN(newBal)) return;
     const s = sites.find(x => x.id === inp.dataset.id);
     if (!s) return;
-    const prevBal = lastBalance(s);
-    const prevDate = lastSettleDate(s);
-    const added = topupCreditsAfter(s, prevDate);
+    const base = lastBalanceBefore(s, date);
+    const added = topupCreditsBetween(s, base.date, date);
     let consumed = 0;
-    if (prevBal !== null) consumed = prevBal + added - newBal;
-    if (consumed < 0) consumed = 0; // 充值后余额上升等情况，钳到0
-    const spanDays = prevDate ? Math.max(1, daysBetweenISO(prevDate, today)) : 1;
-
-    // 更新余额，记历史
-    s.balance = newBal;
-    s.history.push({ date: today, balance: newBal, consumed, spanDays });
-
+    if (base.val !== null) consumed = base.val + added - newBal;
+    if (consumed < 0) consumed = 0;
+    const spanDays = base.date ? Math.max(1, daysBetweenISO(base.date, date)) : 1;
     let price = avgPrice(s);
     if (s.vip && parseFloat(s.vip) > 0) price *= parseFloat(s.vip)/100;
     const rmb = price ? consumed * price : 0;
     totalConsumed += consumed; totalRmb += rmb;
-    items.push({ name: s.name, consumed, rmb, spanDays, prevDate });
+    items.push({ siteId: s.id, name: s.name, consumed, rmb, spanDays, prevDate: base.date, newBal });
   });
-
   if (!items.length) { toast('没有填写任何余额'); return; }
+  pendingSettle = { date, note, items, totalConsumed, totalRmb };
+  showReceipt(pendingSettle, 'preview');
+}
+
+// 第二步：确认入账（真正写数据）
+function confirmSettle() {
+  if (!pendingSettle) return;
+  const { date, note, items, totalConsumed, totalRmb } = pendingSettle;
+  items.forEach(it => {
+    const s = sites.find(x => x.id === it.siteId);
+    if (!s) return;
+    // 移除该站同日期的旧历史（覆盖语义），再写入
+    s.history = (s.history||[]).filter(h => h.date !== date);
+    s.history.push({ date, balance: it.newBal, consumed: it.consumed, spanDays: it.spanDays });
+    s.history.sort((a,b) => a.date < b.date ? -1 : 1);
+    // 余额以"最新一笔历史"为准
+    const latest = s.history[s.history.length-1];
+    s.balance = latest.balance;
+  });
+  // 写日记本（同日期覆盖）
+  diary = diary.filter(d => d.date !== date);
+  diary.push({ date, note, items, totalConsumed, totalRmb });
+  diary.sort((a,b) => a.date < b.date ? 1 : -1);
   save();
   renderSites();
+  pendingSettle = null;
+  closeReceipt();
   closeSettle();
-  showReceipt(items, totalConsumed, totalRmb, today);
+  toast('已入账 · 小票已存入日记本');
 }
 
 const RCPT_QUOTES = [
@@ -1997,15 +2061,16 @@ const RCPT_QUOTES = [
   'Time is counted in what we spend.',
 ];
 
-function showReceipt(items, totalConsumed, totalRmb, today) {
-  // 计算整票覆盖区间：取所有项里最早的 prevDate
+// mode: 'preview' 预览（带确认按钮）；'view' 查看历史（带撤销/关闭）
+function showReceipt(data, mode) {
+  const { date, note, items, totalConsumed, totalRmb } = data;
   let earliest = null, maxSpan = 1;
   items.forEach(it => {
     if (it.prevDate && (!earliest || it.prevDate < earliest)) earliest = it.prevDate;
     if (it.spanDays > maxSpan) maxSpan = it.spanDays;
   });
   let spanLabel = '';
-  if (earliest && maxSpan > 1) spanLabel = `本期 ${fmtDateShort(earliest)} — ${fmtDateShort(today)} · 共 ${maxSpan} 天`;
+  if (earliest && maxSpan > 1) spanLabel = `本期 ${fmtDateShort(earliest)} — ${fmtDateShort(date)} · 共 ${maxSpan} 天`;
   else if (!earliest) spanLabel = '首次结算';
 
   const quote = RCPT_QUOTES[Math.floor(Math.random()*RCPT_QUOTES.length)];
@@ -2018,7 +2083,7 @@ function showReceipt(items, totalConsumed, totalRmb, today) {
     <div class="receipt">
       <div class="rcpt-title">Mnemosyne</div>
       <div class="rcpt-sub">日结小票</div>
-      <div class="rcpt-date">${today}</div>
+      <div class="rcpt-date">${date}</div>
       ${spanLabel ? `<div class="rcpt-span">${spanLabel}</div>` : ''}
       <hr class="rcpt-divider">
       <div class="rcpt-line" style="color:var(--muted);font-size:10px"><span class="rl-name">站点</span><span class="rl-amt">消耗</span><span class="rl-rmb">折RMB</span></div>
@@ -2026,46 +2091,84 @@ function showReceipt(items, totalConsumed, totalRmb, today) {
       <hr class="rcpt-divider">
       <div class="rcpt-total"><span>合计消耗</span><span>${fmtNum(totalConsumed)} 额度</span></div>
       <div class="rcpt-total"><span>合计金额</span><span>¥${totalRmb.toFixed(2)}</span></div>
+      ${note ? `<div class="rcpt-note">📝 ${escHtml(note)}</div>` : ''}
       <div class="rcpt-barcode"></div>
       <div class="rcpt-foot">"${quote}"</div>
     </div>`;
+
+  const footer = document.getElementById('receiptFooter');
+  const titleEl = document.getElementById('receiptModalTitle');
+  if (mode === 'preview') {
+    titleEl.textContent = '小票预览 · 请确认';
+    footer.innerHTML = `
+      <button class="btn-secondary" onclick="closeReceipt()">← 返回修改</button>
+      <button class="btn-primary" onclick="confirmSettle()">✓ 确认入账</button>`;
+  } else {
+    titleEl.textContent = '历史小票';
+    footer.innerHTML = `
+      <button class="btn-danger" onclick="undoSettle('${date}')">撤销这笔结算</button>
+      <button class="btn-secondary" onclick="closeReceipt()">关闭</button>`;
+  }
   document.getElementById('receiptModal').classList.add('open');
 }
 function closeReceipt() { document.getElementById('receiptModal').classList.remove('open'); }
 
-// ── 时间线 ──
-function toggleTimeline() {
-  const m = document.getElementById('timelineModal');
-  const open = m.classList.contains('open');
-  if (open) { m.classList.remove('open'); return; }
-  closeAllPopups();
-  // 汇总所有站点的结算日期
-  const byDate = {};
-  sites.forEach(s => {
-    (s.history||[]).forEach(h => {
-      if (h.consumed === undefined) return;
-      if (!byDate[h.date]) byDate[h.date] = { consumed:0, rmb:0, span:1 };
-      let price = avgPrice(s);
-      if (s.vip && parseFloat(s.vip)>0) price *= parseFloat(s.vip)/100;
-      byDate[h.date].consumed += h.consumed;
-      byDate[h.date].rmb += price ? h.consumed*price : 0;
-      byDate[h.date].span = Math.max(byDate[h.date].span, h.spanDays||1);
+// 撤销某日结算：删历史、回退余额、删日记
+function undoSettle(date) {
+  if (!confirm(`确认撤销 ${date} 的结算？余额会回退到上一笔。`)) return;
+  const entry = diary.find(d => d.date === date);
+  if (entry) {
+    (entry.items||[]).forEach(it => {
+      const s = sites.find(x => x.id === it.siteId);
+      if (!s) return;
+      s.history = (s.history||[]).filter(h => h.date !== date);
+      // 余额回退到最新一笔历史，没有则回退到撤销前的上一基准
+      if (s.history.length) s.balance = s.history[s.history.length-1].balance;
+      else s.balance = (it.prevDate !== null ? it.newBal : s.balance); // 无更早历史时保持
     });
-  });
-  const dates = Object.keys(byDate).sort().reverse();
-  const area = document.getElementById('timelineArea');
-  if (!dates.length) { area.innerHTML = `<div class="empty-state"><div class="empty-icon">📊</div><div class="empty-text">还没有结算记录 · 点 🧾 结算一次</div></div>`; }
-  else {
-    area.innerHTML = `<div class="timeline">` + dates.map(d => {
-      const x = byDate[d];
-      const spanTxt = x.span > 1 ? ` · 跨${x.span}天` : '';
-      return `<div class="tl-node">
-        <div class="tl-date">${d}${spanTxt}</div>
-        <div class="tl-info">消耗 ${fmtNum(x.consumed)} 额度 · 合 ¥${x.rmb.toFixed(2)}</div>
-      </div>`;
-    }).join('') + `</div>`;
   }
-  m.classList.add('open');
+  diary = diary.filter(d => d.date !== date);
+  save();
+  renderSites();
+  closeReceipt();
+  openDiary();
+  toast('已撤销该笔结算');
+}
+
+// ════════ 日记本 ════════
+function openDiary() {
+  closeAllPopups();
+  renderDiary();
+  document.getElementById('diaryModal').classList.add('open');
+}
+function closeDiary() { document.getElementById('diaryModal').classList.remove('open'); }
+function renderDiary() {
+  document.getElementById('diaryCount').textContent = diary.length;
+  const box = document.getElementById('diaryList');
+  if (!diary.length) {
+    box.innerHTML = `<div class="empty-state"><div class="empty-icon">📖</div><div class="empty-text">还没有日记 · 去「今日结算」记一笔</div></div>`;
+    return;
+  }
+  const sorted = [...diary].sort((a,b) => a.date < b.date ? 1 : -1);
+  box.innerHTML = sorted.map(d => {
+    const noteTxt = d.note ? escHtml(d.note.slice(0,40)) + (d.note.length>40?'…':'') : '<span style="color:var(--muted)">无札记</span>';
+    return `
+    <div class="diary-list-item" onclick="viewDiary('${d.date}')">
+      <div>
+        <div class="dli-date">${d.date}</div>
+        <div class="dli-info">${noteTxt}</div>
+      </div>
+      <div style="text-align:right">
+        <div class="dli-amt">¥${(d.totalRmb||0).toFixed(2)}</div>
+        <div class="dli-info">${fmtNum(d.totalConsumed||0)} 额度</div>
+      </div>
+    </div>`;
+  }).join('');
+}
+function viewDiary(date) {
+  const entry = diary.find(d => d.date === date);
+  if (!entry) return;
+  showReceipt(entry, 'view');
 }
 
 // ── CHAR MODAL ──
@@ -2100,9 +2203,7 @@ function openCharModal(id=null) {
   }
   document.getElementById('charModal').classList.add('open');
 }
-
 function closeCharModal() { document.getElementById('charModal').classList.remove('open'); }
-
 function updateEmojiPreview() {
   const e = document.getElementById('f_emoji').value.trim();
   document.getElementById('avatarEmoji').textContent = e || '🎭';
@@ -2110,7 +2211,6 @@ function updateEmojiPreview() {
   document.getElementById('avatarEmoji').style.display = 'flex';
   avatarData = null;
 }
-
 function handleAvatarUpload(e) {
   const file = e.target.files[0];
   if (!file) return;
@@ -2123,15 +2223,13 @@ function handleAvatarUpload(e) {
   };
   reader.readAsDataURL(file);
 }
-
 function saveChar() {
   const name = document.getElementById('f_charname').value.trim();
   const since = document.getElementById('f_since').value;
   if (!name || !since) { toast('请填写角色名和认识日期'); return; }
   const data = {
     id: editingCharId || uid(),
-    name,
-    since,
+    name, since,
     note: document.getElementById('f_charnote').value.trim(),
     emoji: document.getElementById('f_emoji').value.trim() || '🎭',
     avatar: avatarData || null,
@@ -2145,24 +2243,19 @@ function saveChar() {
   save(); closeCharModal(); renderChars();
   toast(editingCharId ? '角色已更新' : '角色已添加');
 }
-
 function deleteChar(id) {
   if (!confirm('确认删除此角色？')) return;
   chars = chars.filter(c => c.id !== id);
   save(); renderChars();
   toast('已删除');
 }
-
-// ── RENDER CHARS ──
 function renderChars() {
   const sort = document.getElementById('charSort').value;
   let list = chars.map(c => ({ ...c, days: daysBetween(c.since) }));
   if (sort === 'days_desc') list.sort((a,b) => b.days - a.days);
   else if (sort === 'days_asc') list.sort((a,b) => a.days - b.days);
   else list.sort((a,b) => a.name.localeCompare(b.name));
-
   const grid = document.getElementById('charGrid');
-
   const cards = list.map(c => {
     const avatarInner = c.avatar
       ? `<img src="${c.avatar}" alt="${escHtml(c.name)}">`
@@ -2181,7 +2274,6 @@ function renderChars() {
       </div>
     </div>`;
   }).join('');
-
   grid.innerHTML = cards + `
   <div class="add-card" onclick="openCharModal()">
     <span class="add-card-icon">◇</span>
@@ -2194,7 +2286,6 @@ function escHtml(str) {
   if (str === null || str === undefined) return '';
   return String(str).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;').replace(/'/g,'&#39;');
 }
-
 function fmtNum(v) {
   const n = parseFloat(v);
   if (isNaN(n)) return '0';
@@ -2208,11 +2299,10 @@ document.querySelectorAll('.font-option').forEach(el => {
   el.classList.toggle('active', el.dataset.font === savedFont);
 });
 document.getElementById('todayDate').textContent = todayStr();
-save(); // 持久化迁移结果
+save();
 renderSites();
 renderChars();
 
-// 注册 Service Worker（PWA 可安装的关键之一）
 if ('serviceWorker' in navigator) {
   window.addEventListener('load', () => {
     navigator.serviceWorker.register('sw.js').catch(err => console.log('SW 注册失败', err));
